@@ -1,0 +1,24 @@
+{
+  "asset": "singular.glb",
+  "bytes": 641996,
+  "meshes": [
+    {
+      "name": "Singular_1",
+      "vertices": 4460,
+      "triangles": 8836,
+      "finite": true
+    },
+    {
+      "name": "Singular_2",
+      "vertices": 4460,
+      "triangles": 8836,
+      "finite": true
+    },
+    {
+      "name": "Singular_3",
+      "vertices": 4460,
+      "triangles": 8836,
+      "finite": true
+    }
+  ]
+}

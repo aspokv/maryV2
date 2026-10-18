@@ -1,0 +1,362 @@
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SCENE_STOPS } from "./choreography.mjs";
+import { Contact, Arrow } from "../components/UI.jsx";
+const Sculpture = lazy(() => import("./Sculpture.jsx"));
+gsap.registerPlugin(ScrollTrigger);
+
+export default function Experience() {
+  const section = useRef();
+  const progress = useRef(0);
+  const [chapter, setChapter] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [render3D, setRender3D] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [mobile, setMobile] = useState(false);
+  const [active, setActive] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  const [finish, setFinish] = useState("copper");
+  const onReady = useCallback(() => setReady(true), []);
+  const onFail = useCallback(() => {
+    setFailed(true);
+    setReady(false);
+    setRender3D(false);
+  }, []);
+  useEffect(() => {
+    const mq = matchMedia("(max-width: 700px)");
+    const rm = matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => {
+      setMobile(mq.matches);
+      setReduced(rm.matches);
+    };
+    update();
+    mq.addEventListener("change", update);
+    rm.addEventListener("change", update);
+    const timer = setTimeout(() => {
+      if (rm.matches || navigator.connection?.saveData) return;
+      const canvas = document.createElement("canvas");
+      const gl = canvas.getContext("webgl2");
+      if (!gl) {
+        setFailed(true);
+        return;
+      }
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      setRender3D(true);
+    }, 350);
+    const observer = new IntersectionObserver(
+      ([entry]) => setActive(entry.isIntersecting),
+      { rootMargin: "120px" },
+    );
+    observer.observe(section.current);
+    return () => {
+      clearTimeout(timer);
+      mq.removeEventListener("change", update);
+      rm.removeEventListener("change", update);
+      observer.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    if (reduced) return;
+    const el = section.current;
+    const ctx = gsap.context(() => {
+      const panels = gsap.utils.toArray(".chapter");
+      gsap.set(panels, { yPercent: mobile ? 0 : -46, y: 0 });
+      gsap.set(panels.slice(1), { autoAlpha: 0, pointerEvents: "none" });
+      gsap.fromTo(
+        ".chapter-0 .line-inner",
+        { yPercent: 105 },
+        {
+          yPercent: 0,
+          duration: 1.35,
+          stagger: 0.12,
+          ease: "power4.out",
+          delay: 0.08,
+        },
+      );
+      gsap.fromTo(
+        ".chapter-0 .chapter-extra",
+        { y: 10 },
+        { y: 0, duration: 1, delay: 0.15 },
+      );
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.8,
+          onUpdate: (self) => {
+            progress.current = self.progress;
+            setChapter(self.progress < 0.29 ? 0 : self.progress < 0.64 ? 1 : 2);
+          },
+        },
+      });
+      tl.to(
+        ".chapter-0",
+        { autoAlpha: 0, y: -60, duration: 0.14, ease: "power2.inOut" },
+        0.15,
+      )
+        .fromTo(
+          ".chapter-1",
+          { autoAlpha: 0, y: 65 },
+          { autoAlpha: 1, y: 0, duration: 0.16, ease: "power2.out" },
+          0.27,
+        )
+        .fromTo(
+          ".chapter-1 .line-inner",
+          { yPercent: 105 },
+          { yPercent: 0, stagger: 0.035, duration: 0.14 },
+          0.27,
+        )
+        .to(".chapter-1", { autoAlpha: 0, y: -55, duration: 0.13 }, 0.53)
+        .fromTo(
+          ".chapter-2",
+          { autoAlpha: 0, y: 70 },
+          { autoAlpha: 1, y: 0, duration: 0.16 },
+          0.64,
+        )
+        .fromTo(
+          ".chapter-2 .line-inner",
+          { yPercent: 105 },
+          { yPercent: 0, stagger: 0.035, duration: 0.14 },
+          0.64,
+        )
+        .to(
+          ".experience-progress-fill",
+          { scaleX: 1, duration: 1, ease: "none" },
+          0,
+        )
+        .to(
+          ".poster-motion",
+          {
+            rotation: -14,
+            scale: 1.02,
+            xPercent: mobile ? -2 : -63,
+            duration: 0.55,
+            ease: "power1.inOut",
+          },
+          0.38,
+        )
+        .to(".poster-turn", { opacity: 1, duration: 0.15, ease: "none" }, 0.24)
+        .to(".poster-base", { opacity: 0, duration: 0.15, ease: "none" }, 0.24)
+        .to(".poster-open", { opacity: 1, duration: 0.18, ease: "none" }, 0.57)
+        .to(".poster-turn", { opacity: 0, duration: 0.18, ease: "none" }, 0.57)
+        .to(
+          ".poster-open, .poster-turn",
+          { opacity: 0, duration: 0.12, ease: "none" },
+          0.88,
+        )
+        .to(".poster-base", { opacity: 1, duration: 0.12, ease: "none" }, 0.88)
+        .to({}, { duration: 0.07 }, 0.93);
+      gsap.set(".chapter-1, .chapter-2", { pointerEvents: "auto" });
+    }, el);
+    return () => ctx.revert();
+  }, [reduced, mobile]);
+  const goTo = (i) => {
+    if (i > 2) {
+      document
+        .getElementById("mariana")
+        ?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+      return;
+    }
+    const el = section.current;
+    const start = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: start + (el.offsetHeight - window.innerHeight) * SCENE_STOPS[i],
+      behavior: reduced ? "auto" : "smooth",
+    });
+  };
+  return (
+    <section
+      className={`experience ${reduced ? "is-reduced" : ""} ${ready ? "scene-ready" : ""}`}
+      ref={section}
+      id="experiencia"
+      aria-label="Uma experiência sobre singularidade e cuidado"
+    >
+      <div className="experience-stage">
+        <div className="stage-hairline" aria-hidden="true" />
+        <div className="sculpture-poster" aria-hidden="true">
+          <div className="poster-motion">
+            <img
+              className="poster-base"
+              src="/images/singular-poster.webp"
+              srcSet="/images/singular-poster-small.webp 600w, /images/singular-poster.webp 1200w"
+              sizes="(max-width:700px) 100vw, 65vw"
+              alt=""
+              fetchPriority="high"
+              width="1200"
+              height="1300"
+            />
+            <img
+              className="poster-turn"
+              src="/images/singular-turn.webp"
+              alt=""
+              width="1000"
+              height="1100"
+              loading="lazy"
+            />
+            <img
+              className="poster-open"
+              src="/images/singular-open.webp"
+              alt=""
+              width="1000"
+              height="1100"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        {render3D && !reduced && (
+          <Suspense fallback={null}>
+            <Sculpture
+              progress={progress}
+              mobile={mobile}
+              finish={finish}
+              paused={paused}
+              active={active}
+              onReady={onReady}
+              onFail={onFail}
+            />
+          </Suspense>
+        )}
+        <div
+          className="chapter chapter-0"
+          aria-hidden={!reduced && chapter !== 0}
+          inert={!reduced && chapter !== 0}
+        >
+          <p className="eyebrow chapter-extra">
+            <span className="tiny-star">✳</span> CAXIAS DO SUL · BIOMEDICINA
+            ESTÉTICA
+          </p>
+          <h1>
+            <Line>A sua beleza</Line>
+            <Line>
+              <em>não segue</em>
+            </Line>
+            <Line>um padrão.</Line>
+          </h1>
+          <div className="chapter-extra hero-tail">
+            <p>
+              Um olhar para os seus traços.
+              <br />
+              Uma conversa antes de qualquer escolha.
+            </p>
+            <Contact position="hero" variant="line">
+              Começar uma conversa
+            </Contact>
+          </div>
+        </div>
+        <div
+          className="chapter chapter-1"
+          aria-hidden={!reduced && chapter !== 1}
+          inert={!reduced && chapter !== 1}
+        >
+          <p className="eyebrow">01 — UM OUTRO PONTO DE VISTA</p>
+          <h2>
+            <Line>O conjunto.</Line>
+            <Line>
+              <em>Antes do</em>
+            </Line>
+            <Line>detalhe.</Line>
+          </h2>
+          <p className="chapter-description">
+            O que você deseja mudar.
+            <br />O que faz questão de preservar.
+          </p>
+        </div>
+        <div
+          className="chapter chapter-2"
+          aria-hidden={!reduced && chapter !== 2}
+          inert={!reduced && chapter !== 2}
+        >
+          <p className="eyebrow">02 — CADA ESCOLHA TEM SEU TEMPO</p>
+          <h2>
+            <Line>Precisão</Line>
+            <Line>
+              <em>é também</em>
+            </Line>
+            <Line>saber parar.</Line>
+          </h2>
+          <p className="chapter-description">
+            Possibilidades, limites e próximos passos.
+            <br />
+            Uma decisão de cada vez.
+          </p>
+          <a className="text-link" href="#mariana">
+            Conheça a Mariana <Arrow />
+          </a>
+        </div>
+        <div className="stage-footer">
+          <button
+            className="scroll-cue"
+            onClick={() => goTo(chapter + 1)}
+            aria-label="Avançar na experiência"
+          >
+            <span className="scroll-line" /> <span>ROLE PARA DESCOBRIR</span>
+          </button>
+          <div className="chapter-nav" aria-label="Etapas da experiência">
+            {["Identidade", "Proporção", "Cuidado"].map((label, i) => (
+              <button
+                key={label}
+                aria-label={`0${i + 1} ${label}`}
+                aria-current={chapter === i ? "step" : undefined}
+                onClick={() => goTo(i)}
+              >
+                <span>0{i + 1}</span>
+                <b>{label}</b>
+              </button>
+            ))}
+          </div>
+          {ready && !failed ? (
+            <div className="scene-tools">
+              <span className="drag-hint">ARRASTE PARA GIRAR</span>
+              <button
+                className={`finish-dot copper ${finish === "copper" ? "selected" : ""}`}
+                aria-label="Acabamento cobre"
+                aria-pressed={finish === "copper"}
+                onClick={() => setFinish("copper")}
+              />
+              <button
+                className={`finish-dot pearl ${finish === "pearl" ? "selected" : ""}`}
+                aria-label="Acabamento pérola"
+                aria-pressed={finish === "pearl"}
+                onClick={() => setFinish("pearl")}
+              />
+              <button
+                className="pause-button"
+                aria-label={
+                  paused ? "Retomar movimento sutil" : "Pausar movimento sutil"
+                }
+                aria-pressed={paused}
+                onClick={() => setPaused(!paused)}
+              >
+                {paused ? "▷" : "Ⅱ"}
+              </button>
+            </div>
+          ) : (
+            <span className="art-label">
+              SINGULAR <span>— ESTUDO DE FORMA</span>
+            </span>
+          )}
+        </div>
+        <div className="experience-progress" aria-hidden="true">
+          <span className="experience-progress-fill" />
+        </div>
+      </div>
+    </section>
+  );
+}
+function Line({ children }) {
+  return (
+    <span className="display-line">
+      <span className="line-inner">{children}</span>
+    </span>
+  );
+}

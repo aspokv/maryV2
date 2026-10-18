@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "routes": 9,
+  "static_html_bytes": 15323,
+  "javascript": [
+    {
+      "name": "Sculpture-BEbAUUVt.js",
+      "bytes": 1018005,
+      "gzip_bytes": 279247,
+      "lazy_scene": true
+    },
+    {
+      "name": "index-Godc10m1.js",
+      "bytes": 492713,
+      "gzip_bytes": 165033,
+      "lazy_scene": false
+    }
+  ],
+  "assets": {
+    "models/singular.glb": {
+      "bytes": 641996,
+      "gzip_bytes": 374313
+    },
+    "images/singular-poster.webp": {
+      "bytes": 39334,
+      "gzip_bytes": 38276
+    },
+    "images/singular-poster-small.webp": {
+      "bytes": 21718,
+      "gzip_bytes": 21650
+    },
+    "images/singular-turn.webp": {
+      "bytes": 40336,
+      "gzip_bytes": 39695
+    },
+    "images/singular-open.webp": {
+      "bytes": 27378,
+      "gzip_bytes": 26198
+    }
+  },
+  "note": "File sizes only, not measured LCP/INP/CLS or actual transfer. Optional scene is lazy loaded."
+}
