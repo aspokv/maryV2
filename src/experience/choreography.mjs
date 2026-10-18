@@ -7,22 +7,22 @@ export const smooth = (a, b, x) => {
 };
 export function scenePose(progress, mobile = false) {
   const p = clamp(progress);
-  const turn = smooth(0.12, 0.55, p);
-  const open = smooth(0.49, 0.71, p) * (1 - smooth(0.84, 1, p));
   const cross = smooth(0.5, 0.78, p);
   return {
-    rotation: [
-      -0.17 + Math.sin(p * Math.PI) * 0.14,
-      -0.32 + turn * 1.2 + cross * 0.45,
-      0.12 - turn * 0.2,
+    // Tilt is applied to the whole helix; spin turns it around its own axis.
+    tilt: [
+      -0.14 + Math.sin(p * Math.PI) * 0.1,
+      mobile ? -0.4 : -0.42 + cross * 0.84,
     ],
+    spin: -0.3 + p * 2.4,
     scale: mobile
-      ? 0.59 + Math.sin(p * Math.PI) * 0.045
-      : 1.02 + Math.sin(p * Math.PI) * 0.15,
-    offsetX: mobile ? 0.12 : 0.23 - cross * 0.46,
-    offsetY: mobile ? -0.87 : -0.05,
+      ? 0.36 + Math.sin(p * Math.PI) * 0.03
+      : 0.72 + Math.sin(p * Math.PI) * 0.06,
+    offsetX: mobile ? 0.2 : 0.21 - cross * 0.44,
+    offsetY: mobile ? -0.92 : -0.04,
     cameraZ: mobile ? 6.4 : 6.6 - Math.sin(p * Math.PI) * 0.45,
-    explode: open,
+    // 0: three loose fibres · 1: a tight triple helix.
+    wind: smooth(0.06, 0.74, p),
     light: 1.1 + smooth(0, 0.16, p) * 0.45,
   };
 }

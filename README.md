@@ -17,10 +17,10 @@ A saída estática está em `dist/`. Nove rotas são pré-renderizadas. Docker/N
 
 ## Narrativa e interface
 
-1. **Identidade:** abertura com “A sua beleza não segue um padrão”, objeto em cobre e convite para conversar.
-2. **Proporção:** câmera percorre a forma; títulos entram linha a linha acompanhando o scroll.
-3. **Cuidado:** as três peças se abrem e retornam ao conjunto; a composição troca de lado.
-4. **Mariana:** transição para marfim e retrato real. Três etapas curtas da conversa.
+1. **Identidade:** abertura com “A sua beleza não segue um padrão”, três fibras soltas, retrato e CRBM da Mariana e convite para conversar.
+2. **Proporção:** as fibras começam a se enrolar; títulos entram linha a linha acompanhando o scroll.
+3. **Cuidado:** as fibras fecham a tripla hélice do colágeno; a composição troca de lado.
+4. **Mariana:** transição para nude e retrato real. Atendimento feito só por ela (“Quem te avalia é quem te atende”) e três etapas curtas da conversa.
 5. **Cuidados:** quatro linhas expansíveis e acesso ao conteúdo sobre textura da pele.
 6. **Agendamento:** três perguntas, WhatsApp, endereço e Instagram.
 
@@ -35,43 +35,45 @@ src/
   experience/
     Experience.jsx            # Palco sticky, títulos e timeline GSAP
     Sculpture.jsx             # Canvas R3F, materiais, luz, interação e limites de DPR
-    choreography.mjs          # Poses da câmera, rotação e separação das peças
-  site.config.mjs             # Dados reais, conteúdo, revisão e caminho do modelo
+    helix.mjs                 # Geometria da tripla hélice (fibras solto → enrolado)
+    choreography.mjs          # Poses, giro e quanto a hélice está enrolada
+  site.config.mjs             # Dados reais, conteúdo e revisão
   lib.mjs                     # WhatsApp/UTMs, schema e gate de divulgação
   tracking.mjs                # Consentimento e eventos institucionais
   styles.css                  # Tokens e composições responsivas
 public/
-  models/singular.glb         # Escultura original, 3 partes, sem textura externa
-  images/singular-*.webp      # Renders originais de fallback
-  images/mariana-*            # Retrato público usado no conceito privado
-  draco/                     # Decodificador local para GLBs substitutos
+  images/helix-*.webp         # Renders da hélice para quando não há WebGL
+  images/mariana-*            # Retrato público e avatar do topo
 scripts/
   prerender.mjs
   core.test.mjs
   release-check.mjs
-  create-sculpture.py         # Autoria opcional da malha e renders via OpenGL/EGL
+  render-assets.mjs           # Gera renders da hélice, avatar e imagem de compartilhamento
 ```
 
 ## 3D
 
-A escultura **Singular** é uma malha original de fita entrelaçada, com 26.508 triângulos. Não representa anatomia, procedimento ou previsão de resultado. Nenhum modelo de paciente ou banco de imagens foi usado para construí-la.
+A **tripla hélice do colágeno** é gerada no código (`src/experience/helix.mjs`), sem arquivo de modelo. São três fibras que começam soltas e se enrolam conforme o scroll, até formar a hélice. É uma ilustração da estrutura do colágeno; não representa procedimento ou previsão de resultado.
 
-- Three.js / React Three Fiber / Drei; GLB carregado de forma assíncrona.
+- Three.js / React Three Fiber / Drei; a geometria é recalculada só quando a hélice muda de estado.
 - Rotação por mouse/toque com amortecimento; gesto vertical preservado no celular.
-- Dois acabamentos: cobre e pérola; botão para pausar a flutuação.
-- GSAP dirige pose, luz, enquadramento, abertura e recomposição pelo scroll.
+- Dois acabamentos: champanhe e pérola; botão para pausar a flutuação.
+- GSAP dirige pose, luz, enquadramento e o quanto a hélice está enrolada.
 - Materiais PBR, ambiente de estúdio local, sem CDN de ambiente ou textura.
 - DPR limitado e reduzido quando o orçamento de quadros se deteriora.
 - Renderização suspensa fora da experiência.
-- WebGL indisponível: renders do mesmo objeto com transições de enquadramento e abertura.
+- WebGL indisponível: renders da mesma hélice (solta, meio, enrolada).
 - Movimento reduzido: conteúdo estático e legível; economia de dados: não baixa a cena.
-- Não há promessa de 60 fps: falta medição em aparelhos reais.
 
-Para substituir o GLB, alterar `sculptureConfig.path` e `parts` em `site.config.mjs`. As peças precisam ter a geometria em coordenadas comuns, com transformações aplicadas no arquivo. Um GLB Draco pode usar o decodificador incluído. O modelo atual não usa compressão Draco e não tem texturas.
+Para regerar os renders, o avatar e `og-mariana.jpg` depois de mudar a hélice ou as cores: `npm i --no-save puppeteer-core && node scripts/render-assets.mjs` (usa o Chrome ou Edge instalado). As cores do material ficam em `Sculpture.jsx` e `render-assets.client.mjs`; mantenha as duas iguais.
+
+## Paleta
+
+Tirada do feed dela: marfim (`#f7f2ec`), nude (`#ede3d8`), caramelo (`#875935`), champanhe (`#c9a27e`) e chocolate (`#3a2a20`). Fechamento e rodapé em chocolate. Tokens em `src/styles.css`.
 
 ## Conteúdo e publicação
 
-Esta é uma versão privada para revisão. Registro profissional/PJ, habilitação, horários, autorização das fotos, escopo profissional, política e demais dados precisam de confirmação. `canRelease()` mantém `noindex` enquanto esses dados e aprovações não estão completos. Não preencher por inferência.
+Esta é uma versão privada para revisão. O CRBM-5 6569 veio da bio pública do Instagram (@dramarianastrey). Registro PJ, habilitação, horários, autorização das fotos, escopo profissional, política e demais dados precisam de confirmação. `canRelease()` mantém `noindex` enquanto esses dados e aprovações não estão completos. Não preencher por inferência.
 
 O retrato e os dados públicos vieram das fontes registradas em `docs/estrategia-mariana-strey.md`. O documento da V1 continua como pesquisa e referência de conteúdo/compliance; seus wireframes, direção de arte e orçamento técnico foram substituídos por esta V2.
 

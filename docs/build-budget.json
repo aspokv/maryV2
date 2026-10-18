@@ -1,42 +1,42 @@
 {
-  "version": 2,
+  "version": 3,
   "routes": 9,
-  "static_html_bytes": 15323,
+  "static_html_bytes": 15730,
   "javascript": [
     {
-      "name": "Sculpture-BEbAUUVt.js",
-      "bytes": 1018005,
-      "gzip_bytes": 279247,
-      "lazy_scene": true
+      "name": "index-C3-nnLO6.js",
+      "bytes": 492605,
+      "gzip_bytes": 165692,
+      "lazy_scene": false
     },
     {
-      "name": "index-Godc10m1.js",
-      "bytes": 492713,
-      "gzip_bytes": 165033,
-      "lazy_scene": false
+      "name": "Sculpture-BRiWLC2o.js",
+      "bytes": 948507,
+      "gzip_bytes": 261063,
+      "lazy_scene": true
     }
   ],
   "assets": {
-    "models/singular.glb": {
-      "bytes": 641996,
-      "gzip_bytes": 374313
+    "images/helix-loose.webp": {
+      "bytes": 52560,
+      "gzip_bytes": 50866
     },
-    "images/singular-poster.webp": {
-      "bytes": 39334,
-      "gzip_bytes": 38276
+    "images/helix-loose-small.webp": {
+      "bytes": 23542,
+      "gzip_bytes": 23212
     },
-    "images/singular-poster-small.webp": {
-      "bytes": 21718,
-      "gzip_bytes": 21650
+    "images/helix-mid.webp": {
+      "bytes": 40318,
+      "gzip_bytes": 39091
     },
-    "images/singular-turn.webp": {
-      "bytes": 40336,
-      "gzip_bytes": 39695
+    "images/helix-tight.webp": {
+      "bytes": 28714,
+      "gzip_bytes": 27275
     },
-    "images/singular-open.webp": {
-      "bytes": 27378,
-      "gzip_bytes": 26198
+    "images/mariana-avatar.webp": {
+      "bytes": 3220,
+      "gzip_bytes": 3085
     }
   },
-  "note": "File sizes only, not measured LCP/INP/CLS or actual transfer. Optional scene is lazy loaded."
+  "note": "File sizes only, not measured LCP/INP/CLS or actual transfer. Optional scene is lazy loaded; the helix is generated in code, so there is no model download."
 }

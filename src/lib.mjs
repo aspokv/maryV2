@@ -27,7 +27,7 @@ export function whatsappHref({
   search = "",
 } = {}) {
   const a = attribution(search);
-  const message = `Olá! Quero conversar com a equipe da Dra. Mariana Strey sobre ${label}. Como funciona a avaliação?\nOrigem: ${a.source}/${a.medium}${a.content ? "/" + a.content : ""} · ${position}`;
+  const message = `Olá, Mariana! Vim pelo site e quero conversar sobre ${label}. Como funciona a avaliação?\nOrigem: ${a.source}/${a.medium}${a.content ? "/" + a.content : ""} · ${position}`;
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`;
 }
 export function mapHref() {

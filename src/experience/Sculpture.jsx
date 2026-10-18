@@ -7,15 +7,20 @@ import React, {
   useState,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Environment, Lightformer, AdaptiveDpr } from "@react-three/drei";
 import {
-  Environment,
-  Lightformer,
-  AdaptiveDpr,
-  useGLTF,
-} from "@react-three/drei";
-import { MathUtils, ACESFilmicToneMapping, Color } from "three";
+  MathUtils,
+  ACESFilmicToneMapping,
+  BufferAttribute,
+  BufferGeometry,
+  Color,
+  DynamicDrawUsage,
+  MeshPhysicalMaterial,
+  Sphere,
+  Vector3,
+} from "three";
 import { scenePose } from "./choreography.mjs";
-import { sculptureConfig } from "../site.config.mjs";
+import { createStrand } from "./helix.mjs";
 
 class Boundary extends Component {
   state = { failed: false };
@@ -29,18 +34,53 @@ class Boundary extends Component {
     return this.state.failed ? null : this.props.children;
   }
 }
-function Object({ progress, pointer, mobile, finish, paused, onReady }) {
-  const { scene } = useGLTF(sculptureConfig.path, sculptureConfig.dracoPath);
-  const pieces = useMemo(
+const FINISHES = {
+  champagne: { color: "#d2ab82", metalness: 0.8, roughness: 0.28, iridescence: 0 },
+  pearl: { color: "#efe5d8", metalness: 0.12, roughness: 0.24, iridescence: 0.55 },
+};
+function Helix({ progress, pointer, mobile, finish, paused, onReady }) {
+  const strands = useMemo(() => {
+    const initial = scenePose(0, mobile).wind;
+    return [0, 1, 2].map((i) => {
+      const strand = createStrand(i, mobile ? 150 : 220, mobile ? 14 : 18);
+      strand.update(initial);
+      const geometry = new BufferGeometry();
+      geometry.setAttribute(
+        "position",
+        new BufferAttribute(strand.positions, 3).setUsage(DynamicDrawUsage),
+      );
+      geometry.setAttribute(
+        "normal",
+        new BufferAttribute(strand.normals, 3).setUsage(DynamicDrawUsage),
+      );
+      geometry.setIndex(new BufferAttribute(strand.indices, 1));
+      geometry.boundingSphere = new Sphere(new Vector3(), 2.6);
+      return { strand, geometry };
+    });
+  }, [mobile]);
+  const material = useMemo(
     () =>
-      sculptureConfig.parts
-        .map((name) => scene.getObjectByName(name))
-        .filter(Boolean),
-    [scene],
+      new MeshPhysicalMaterial({
+        ...FINISHES.champagne,
+        clearcoat: 0.45,
+        clearcoatRoughness: 0.25,
+        iridescenceIOR: 1.35,
+      }),
+    [],
+  );
+  useEffect(
+    () => () => {
+      strands.forEach(({ geometry }) => geometry.dispose());
+      material.dispose();
+    },
+    [strands, material],
   );
   const root = useRef();
+  const spinner = useRef();
   const ready = useRef(false);
   const elapsed = useRef(0);
+  const wind = useRef(scenePose(0, mobile).wind);
+  const wound = useRef(wind.current);
   const materialColor = useMemo(() => new Color(), []);
   const { camera, viewport } = useThree();
   useFrame((state, dt) => {
@@ -66,19 +106,19 @@ function Object({ progress, pointer, mobile, finish, paused, onReady }) {
     );
     root.current.rotation.x = MathUtils.damp(
       root.current.rotation.x,
-      pose.rotation[0] + pointer.current.y * 0.07,
-      4,
-      delta,
-    );
-    root.current.rotation.y = MathUtils.damp(
-      root.current.rotation.y,
-      pose.rotation[1] + pointer.current.x * 0.11 + pointer.current.drag,
+      pose.tilt[0] + pointer.current.y * 0.07,
       4,
       delta,
     );
     root.current.rotation.z = MathUtils.damp(
       root.current.rotation.z,
-      pose.rotation[2],
+      pose.tilt[1],
+      4,
+      delta,
+    );
+    spinner.current.rotation.y = MathUtils.damp(
+      spinner.current.rotation.y,
+      pose.spin + pointer.current.x * 0.11 + pointer.current.drag,
       4,
       delta,
     );
@@ -88,32 +128,22 @@ function Object({ progress, pointer, mobile, finish, paused, onReady }) {
       4,
       delta,
     );
-    materialColor.set(finish === "pearl" ? "#cbc4b5" : "#a5623d");
-    root.current.children.forEach((mesh, i) => {
-      const angle = (i * Math.PI * 2) / 3 - Math.PI / 2;
-      mesh.position.x = MathUtils.damp(
-        mesh.position.x,
-        Math.cos(angle) * pose.explode * 0.7,
-        4,
-        delta,
-      );
-      mesh.position.y = MathUtils.damp(
-        mesh.position.y,
-        Math.sin(angle) * pose.explode * 0.7,
-        4,
-        delta,
-      );
-      mesh.position.z = MathUtils.damp(
-        mesh.position.z,
-        (i - 1) * pose.explode * 0.3,
-        4,
-        delta,
-      );
-      mesh.material.color.lerp(materialColor, 1 - Math.exp(-delta * 5));
-      mesh.material.envMapIntensity = pose.light;
-      mesh.material.metalness = finish === "pearl" ? 0.35 : 0.94;
-      mesh.material.roughness = finish === "pearl" ? 0.3 : 0.25;
-    });
+    wind.current = MathUtils.damp(wind.current, pose.wind, 4, delta);
+    if (Math.abs(wind.current - wound.current) > 0.0015) {
+      wound.current = wind.current;
+      strands.forEach(({ strand, geometry }) => {
+        strand.update(wind.current);
+        geometry.attributes.position.needsUpdate = true;
+        geometry.attributes.normal.needsUpdate = true;
+      });
+    }
+    const look = FINISHES[finish];
+    materialColor.set(look.color);
+    material.color.lerp(materialColor, 1 - Math.exp(-delta * 5));
+    material.envMapIntensity = pose.light;
+    material.metalness = look.metalness;
+    material.roughness = look.roughness;
+    material.iridescence = look.iridescence;
     if (!ready.current) {
       ready.current = true;
       requestAnimationFrame(onReady);
@@ -123,28 +153,22 @@ function Object({ progress, pointer, mobile, finish, paused, onReady }) {
   return (
     <group
       ref={root}
-      rotation={pose.rotation}
+      rotation={[pose.tilt[0], 0, pose.tilt[1]]}
       position={[viewport.width * pose.offsetX, pose.offsetY, 0]}
       scale={pose.scale}
     >
-      {pieces.map((piece) => (
-        <mesh key={piece.name} geometry={piece.geometry}>
-          <meshPhysicalMaterial
-            color="#a5623d"
-            metalness={0.94}
-            roughness={0.25}
-            clearcoat={0.25}
-            clearcoatRoughness={0.3}
-          />
-        </mesh>
-      ))}
+      <group ref={spinner} rotation={[0, pose.spin, 0]}>
+        {strands.map(({ geometry }, i) => (
+          <mesh key={i} geometry={geometry} material={material} />
+        ))}
+      </group>
     </group>
   );
 }
 function StudioEnvironment({ mobile }) {
   return (
     <>
-      <ambientLight intensity={0.16} />
+      <ambientLight intensity={0.3} />
       <directionalLight position={[-3, 5, 3]} color="#ffe3cd" intensity={2.3} />
       <directionalLight
         position={[4, -2, -2]}
@@ -152,7 +176,7 @@ function StudioEnvironment({ mobile }) {
         intensity={1.5}
       />
       <Environment resolution={mobile ? 128 : 256} frames={1}>
-        <color attach="background" args={["#171310"]} />
+        <color attach="background" args={["#5a463a"]} />
         <Lightformer
           position={[-3, 3, 3]}
           rotation={[0, Math.PI / 4, 0]}
@@ -179,7 +203,7 @@ function StudioEnvironment({ mobile }) {
           rotation={[0, Math.PI / 2, 0]}
           scale={[2, 3, 1]}
           intensity={3}
-          color="#bc7443"
+          color="#c99a6b"
         />
       </Environment>
     </>
@@ -242,7 +266,7 @@ export default function Sculpture({
         >
           <Suspense fallback={null}>
             <StudioEnvironment mobile={mobile} />
-            <Object
+            <Helix
               progress={progress}
               pointer={pointer}
               mobile={mobile}

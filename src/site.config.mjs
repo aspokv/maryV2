@@ -2,7 +2,8 @@ export const site = {
   name: "Dra. Mariana Strey",
   legalName: "Mariana Strey Estética e Saúde Ltda.",
   profession: "Biomédica esteta",
-  registration: "",
+  // Public Instagram bio (@dramarianastrey), read 2026-10-18.
+  registration: "CRBM-5 6569",
   companyRegistration: "",
   qualification: "",
   whatsapp: "5554999507227",
@@ -49,7 +50,7 @@ export const procedures = [
     audience: "Para quem quer discutir o equilíbrio do rosto como um todo.",
     focus: "Proporções e contorno, conforme a indicação individual.",
     duration: "Varia com as técnicas indicadas; não há um prazo único.",
-    session: "Definida após a escolha do plano, sem duração fixa anunciada.",
+    session: "Definida junto com o seu plano.",
     recovery: "Depende das intervenções. Pode haver inchaço e hematomas.",
     boundary:
       "O planejamento pode combinar etapas. A avaliação também pode concluir que um procedimento não é indicado.",
@@ -65,10 +66,10 @@ export const procedures = [
     audience:
       "Para quem deseja avaliar definição, assimetria ou volume dos lábios.",
     focus:
-      "Formato e proporção labial. A quantidade não é escolhida pelo site.",
+      "Formato e proporção dos lábios, respeitando a sua anatomia.",
     duration:
       "Individual; depende do produto, da região e da resposta do organismo.",
-    session: "O tempo é informado pela equipe antes da reserva.",
+    session: "A Mariana informa o tempo antes da reserva.",
     recovery:
       "Pode haver sensibilidade, inchaço e hematomas; a rotina precisa ser discutida.",
     boundary:
@@ -103,9 +104,9 @@ export const procedures = [
     focus:
       "Discussão profissional sobre movimento, expressividade e limites de indicação.",
     duration:
-      "Temporária e variável. Não anunciamos um prazo de resultado individual.",
+      "Temporária. O tempo varia de pessoa para pessoa e é conversado na avaliação.",
     session:
-      "Confirmada pela equipe conforme a avaliação e a conduta indicada.",
+      "Definida pela Mariana conforme a avaliação e a conduta indicada.",
     recovery:
       "Exige orientações específicas. Pode haver reações e efeitos indesejados.",
     boundary:
@@ -143,7 +144,7 @@ export const faqs = [
   ],
   [
     "A avaliação tem custo?",
-    "Confirme com a equipe o valor da avaliação, as condições de reserva e a política de cancelamento antes de escolher um horário. Não há preço ou gratuidade presumidos nesta página.",
+    "A Mariana informa o valor da avaliação, as condições de reserva e a política de cancelamento antes de você escolher um horário.",
   ],
   [
     "Os procedimentos doem?",
@@ -155,7 +156,7 @@ export const faqs = [
   ],
   [
     "Quem verifica se o procedimento é indicado?",
-    "A profissional deve avaliar seu histórico, as condições da região e as contraindicações. O registro, a habilitação e o escopo vigente precisam ser conferidos antes do atendimento.",
+    "A própria Mariana, biomédica esteta (CRBM-5 6569), avalia seu histórico, as condições da região e as contraindicações antes de indicar qualquer procedimento.",
   ],
   [
     "E se houver uma intercorrência?",
@@ -171,14 +172,6 @@ export const faqs = [
   ],
   [
     "Onde é o atendimento?",
-    "O endereço divulgado é Av. Itália, 482, sala 703, São Pelegrino, Caxias do Sul. Confirme o local e as orientações de acesso com a equipe no agendamento.",
+    "Av. Itália, 482, sala 703, São Pelegrino, Caxias do Sul. As orientações de acesso são enviadas no agendamento.",
   ],
 ];
-
-// V2: the central sculpture is an original, replaceable three-part GLB.
-// Never use it as anatomical information or a simulation of clinical outcomes.
-export const sculptureConfig = {
-  path: "/models/singular.glb",
-  dracoPath: "/draco/",
-  parts: ["Singular_1", "Singular_2", "Singular_3"],
-};

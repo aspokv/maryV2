@@ -9,34 +9,16 @@ import { applyConsent, getConsent, track } from "./tracking.mjs";
 gsap.registerPlugin(ScrollTrigger);
 
 function Header() {
-  const [light, setLight] = useState(false);
   const [menu, setMenu] = useState(false);
   useEffect(() => {
-    let frame;
-    const check = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const s = document.querySelector(".about");
-        const r = s?.getBoundingClientRect();
-        setLight(Boolean(r && r.top <= 104 && r.bottom > 104));
-      });
-    };
     const esc = (e) => {
       if (e.key === "Escape") setMenu(false);
     };
-    window.addEventListener("scroll", check, { passive: true });
     window.addEventListener("keydown", esc);
-    check();
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", check);
-      window.removeEventListener("keydown", esc);
-    };
+    return () => window.removeEventListener("keydown", esc);
   }, []);
   return (
-    <header
-      className={`header ${light ? "on-light" : ""} ${menu ? "menu-open" : ""}`}
-    >
+    <header className={`header ${menu ? "menu-open" : ""}`}>
       <a href="/" className="brand" aria-label="Mariana Strey, início">
         <Mark />
         <span>
@@ -123,6 +105,13 @@ function About() {
             com uma dúvida. Com algo que quer mudar. Ou com algo que quer
             preservar.
           </p>
+          <p className="about-solo reveal">
+            Quem te avalia é quem te atende.
+            <small>
+              Do primeiro contato ao retorno, é a Mariana com você. Sem
+              intermediários.
+            </small>
+          </p>
           <div className="about-detail reveal">
             <span>01</span>
             <p>Entender sua intenção.</p>
@@ -136,7 +125,7 @@ function About() {
             <p>Decidir o próximo passo com clareza.</p>
           </div>
           <Contact position="about" variant="line" className="reveal">
-            Conversar com a equipe
+            Conversar com a Mariana
           </Contact>
         </div>
       </div>
@@ -229,7 +218,7 @@ const questions = [
   ],
   [
     "Como funciona o agendamento?",
-    "A conversa começa pelo WhatsApp. A equipe confirma o local, os horários disponíveis, o valor da avaliação e as condições de reserva antes de você decidir.",
+    "A conversa começa pelo WhatsApp, direto com a Mariana. Ela confirma o local, os horários disponíveis, o valor da avaliação e as condições de reserva antes de você decidir.",
   ],
   [
     "E sobre resultado, riscos e recuperação?",
@@ -325,8 +314,8 @@ function Footer({ onPrivacy }) {
         {site.qualification || "[Habilitação: a confirmar]"}
         <br />
         Horários: {site.hours || "[a confirmar]"}. Conceito privado em revisão.
-        A escultura é um estudo artístico, sem representação de procedimento ou
-        resultado.
+        A hélice ilustra a estrutura do colágeno, sem representação de
+        procedimento ou resultado.
       </p>
     </footer>
   );
@@ -482,7 +471,7 @@ function Procedure({ p }) {
         ))}
       </dl>
       <Contact position="procedure" label={p.label} variant="line">
-        Tirar minha dúvida com a equipe
+        Tirar minha dúvida com a Mariana
       </Contact>
     </main>
   );

@@ -36,7 +36,7 @@ try {
             ? "Privacidade | Mariana Strey"
             : "Dra. Mariana Strey | Biomedicina estética em Caxias do Sul";
     const description = p
-      ? `${p.label} em São Pelegrino, Caxias do Sul. Conheça indicações, limites e cuidados. Converse sobre sua avaliação com a equipe da Mariana Strey.`
+      ? `${p.label} em São Pelegrino, Caxias do Sul. Conheça indicações, limites e cuidados. Converse direto com a Mariana sobre a sua avaliação.`
       : "Dra. Mariana Strey, biomédica esteta em São Pelegrino, Caxias do Sul. Conheça a proposta de cuidado e converse sobre sua avaliação.";
     html = html
       .replace(/<title>.*?<\/title>/, `<title>${title}</title>`)

@@ -53,26 +53,57 @@ test("schema não inventa estrelas ou condição de médico", () => {
 });
 
 import { scenePose } from "../src/experience/choreography.mjs";
-test("coreografia mantém transformações finitas em todos os quadros e recompõe a escultura", () => {
+import { createStrand, HELIX } from "../src/experience/helix.mjs";
+test("coreografia mantém transformações finitas e enrola as fibras até a hélice", () => {
   for (const mobile of [false, true]) {
+    let previous = -1;
     for (let i = 0; i <= 1000; i++) {
       const pose = scenePose(i / 1000, mobile);
       assert.ok(
         [
-          ...pose.rotation,
+          ...pose.tilt,
+          pose.spin,
           pose.scale,
           pose.offsetX,
           pose.offsetY,
           pose.cameraZ,
-          pose.explode,
+          pose.wind,
           pose.light,
         ].every(Number.isFinite),
       );
       assert.ok(pose.cameraZ > 5);
-      assert.ok(pose.explode >= 0 && pose.explode <= 1);
+      assert.ok(pose.wind >= previous, "a hélice não se desfaz no meio");
+      previous = pose.wind;
     }
-    assert.equal(scenePose(0, mobile).explode, 0);
-    assert.equal(scenePose(1, mobile).explode, 0);
-    assert.ok(scenePose(0.75, mobile).explode > 0.95);
+    assert.equal(scenePose(0, mobile).wind, 0);
+    assert.equal(scenePose(1, mobile).wind, 1);
   }
+});
+test("fibras do colágeno ficam finitas, fechadas nas pontas e próximas na hélice", () => {
+  const strands = [0, 1, 2].map((i) => createStrand(i, 120, 12));
+  for (const wind of [0, 0.5, 1]) {
+    for (const s of strands) {
+      s.update(wind);
+      assert.ok(s.positions.every(Number.isFinite));
+      assert.ok(s.normals.every(Number.isFinite));
+      // The first ring collapses into a rounded tip instead of an open tube.
+      const tip = s.positions.slice(0, 3);
+      for (let j = 0; j < 12; j++)
+        for (let k = 0; k < 3; k++)
+          assert.ok(Math.abs(s.positions[j * 3 + k] - tip[k]) < 1e-6);
+    }
+    const ring = 60 * 12 * 3;
+    const centre = (s) => {
+      const c = [0, 0];
+      for (let j = 0; j < 12; j++) {
+        c[0] += s.positions[ring + j * 3] / 12;
+        c[1] += s.positions[ring + j * 3 + 2] / 12;
+      }
+      return Math.hypot(...c);
+    };
+    const spread = Math.max(...strands.map(centre));
+    if (wind === 1) assert.ok(Math.abs(spread - HELIX.tightRadius) < 0.02);
+    if (wind === 0) assert.ok(spread > HELIX.tightRadius * 2);
+  }
+  assert.ok(strands[0].indices.every((v) => v < 121 * 12));
 });

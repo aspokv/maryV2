@@ -10,6 +10,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SCENE_STOPS } from "./choreography.mjs";
 import { Contact, Arrow } from "../components/UI.jsx";
+import { site } from "../site.config.mjs";
 const Sculpture = lazy(() => import("./Sculpture.jsx"));
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,7 +25,7 @@ export default function Experience() {
   const [active, setActive] = useState(true);
   const [paused, setPaused] = useState(false);
   const [reduced, setReduced] = useState(false);
-  const [finish, setFinish] = useState("copper");
+  const [finish, setFinish] = useState("champagne");
   const onReady = useCallback(() => setReady(true), []);
   const onFail = useCallback(() => {
     setFailed(true);
@@ -145,16 +146,10 @@ export default function Experience() {
           },
           0.38,
         )
-        .to(".poster-turn", { opacity: 1, duration: 0.15, ease: "none" }, 0.24)
-        .to(".poster-base", { opacity: 0, duration: 0.15, ease: "none" }, 0.24)
-        .to(".poster-open", { opacity: 1, duration: 0.18, ease: "none" }, 0.57)
-        .to(".poster-turn", { opacity: 0, duration: 0.18, ease: "none" }, 0.57)
-        .to(
-          ".poster-open, .poster-turn",
-          { opacity: 0, duration: 0.12, ease: "none" },
-          0.88,
-        )
-        .to(".poster-base", { opacity: 1, duration: 0.12, ease: "none" }, 0.88)
+        .to(".poster-mid", { opacity: 1, duration: 0.15, ease: "none" }, 0.24)
+        .to(".poster-loose", { opacity: 0, duration: 0.15, ease: "none" }, 0.24)
+        .to(".poster-tight", { opacity: 1, duration: 0.18, ease: "none" }, 0.57)
+        .to(".poster-mid", { opacity: 0, duration: 0.18, ease: "none" }, 0.57)
         .to({}, { duration: 0.07 }, 0.93);
       gsap.set(".chapter-1, .chapter-2", { pointerEvents: "auto" });
     }, el);
@@ -179,16 +174,16 @@ export default function Experience() {
       className={`experience ${reduced ? "is-reduced" : ""} ${ready ? "scene-ready" : ""}`}
       ref={section}
       id="experiencia"
-      aria-label="Uma experiência sobre singularidade e cuidado"
+      aria-label="Uma experiência sobre singularidade e cuidado, ilustrada pela tripla hélice do colágeno"
     >
       <div className="experience-stage">
         <div className="stage-hairline" aria-hidden="true" />
         <div className="sculpture-poster" aria-hidden="true">
           <div className="poster-motion">
             <img
-              className="poster-base"
-              src="/images/singular-poster.webp"
-              srcSet="/images/singular-poster-small.webp 600w, /images/singular-poster.webp 1200w"
+              className="poster-loose"
+              src="/images/helix-loose.webp"
+              srcSet="/images/helix-loose-small.webp 600w, /images/helix-loose.webp 1200w"
               sizes="(max-width:700px) 100vw, 65vw"
               alt=""
               fetchPriority="high"
@@ -196,16 +191,16 @@ export default function Experience() {
               height="1300"
             />
             <img
-              className="poster-turn"
-              src="/images/singular-turn.webp"
+              className="poster-mid"
+              src="/images/helix-mid.webp"
               alt=""
               width="1000"
               height="1100"
               loading="lazy"
             />
             <img
-              className="poster-open"
-              src="/images/singular-open.webp"
+              className="poster-tight"
+              src="/images/helix-tight.webp"
               alt=""
               width="1000"
               height="1100"
@@ -244,10 +239,24 @@ export default function Experience() {
           </h1>
           <div className="chapter-extra hero-tail">
             <p>
-              Um olhar para os seus traços.
+              Rejuvenescimento com propósito e naturalidade.
               <br />
               Uma conversa antes de qualquer escolha.
             </p>
+            <div className="hero-signature">
+              <img
+                src="/images/mariana-avatar.webp"
+                alt=""
+                width="96"
+                height="96"
+              />
+              <span>
+                Dra. Mariana Strey
+                <small>
+                  Biomédica esteta · {site.registration || "CRBM a confirmar"}
+                </small>
+              </span>
+            </div>
             <Contact position="hero" variant="line">
               Começar uma conversa
             </Contact>
@@ -267,8 +276,8 @@ export default function Experience() {
             <Line>detalhe.</Line>
           </h2>
           <p className="chapter-description">
-            O que você deseja mudar.
-            <br />O que faz questão de preservar.
+            Como as fibras do colágeno:
+            <br />é o conjunto que dá estrutura.
           </p>
         </div>
         <div
@@ -318,10 +327,10 @@ export default function Experience() {
             <div className="scene-tools">
               <span className="drag-hint">ARRASTE PARA GIRAR</span>
               <button
-                className={`finish-dot copper ${finish === "copper" ? "selected" : ""}`}
-                aria-label="Acabamento cobre"
-                aria-pressed={finish === "copper"}
-                onClick={() => setFinish("copper")}
+                className={`finish-dot champagne ${finish === "champagne" ? "selected" : ""}`}
+                aria-label="Acabamento champanhe"
+                aria-pressed={finish === "champagne"}
+                onClick={() => setFinish("champagne")}
               />
               <button
                 className={`finish-dot pearl ${finish === "pearl" ? "selected" : ""}`}
@@ -342,7 +351,7 @@ export default function Experience() {
             </div>
           ) : (
             <span className="art-label">
-              SINGULAR <span>— ESTUDO DE FORMA</span>
+              COLÁGENO <span>— TRIPLA HÉLICE</span>
             </span>
           )}
         </div>
