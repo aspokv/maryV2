@@ -60,9 +60,10 @@ A **tripla hélice do colágeno** é gerada no código (`src/experience/helix.mj
 - Dois acabamentos: champanhe e pérola; botão para pausar a flutuação.
 - GSAP dirige pose, luz, enquadramento e o quanto a hélice está enrolada.
 - Materiais PBR, ambiente de estúdio local, sem CDN de ambiente ou textura.
-- DPR limitado e reduzido quando o orçamento de quadros se deteriora.
+- Renderiza em até 2× com antisserrilhado; cai para 1,5× (mínimo 1,25×) se o aparelho não sustentar os quadros.
+- No celular, `Experience.jsx` mede o espaço livre entre o texto de cada capítulo e a barra inferior, e a hélice (e o render de fallback) é encaixada nesse espaço. Ela nunca fica por cima do texto, em qualquer altura de tela.
 - Renderização suspensa fora da experiência.
-- WebGL indisponível: renders da mesma hélice (solta, meio, enrolada).
+- WebGL indisponível: renders da mesma hélice (solta, meio, enrolada), em versão vertical (desktop) e horizontal (`*-wide`, celular).
 - Movimento reduzido: conteúdo estático e legível; economia de dados: não baixa a cena.
 
 Para regerar os renders, o avatar e `og-mariana.jpg` depois de mudar a hélice ou as cores: `npm i --no-save puppeteer-core && node scripts/render-assets.mjs` (usa o Chrome ou Edge instalado). As cores do material ficam em `Sculpture.jsx` e `render-assets.client.mjs`; mantenha as duas iguais.

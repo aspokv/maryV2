@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, AdaptiveDpr } from "@react-three/drei";
+import { Environment, Lightformer } from "@react-three/drei";
 import {
   MathUtils,
   ACESFilmicToneMapping,
@@ -20,7 +20,7 @@ import {
   Vector3,
 } from "three";
 import { scenePose } from "./choreography.mjs";
-import { createStrand } from "./helix.mjs";
+import { createStrand, helixExtent } from "./helix.mjs";
 
 class Boundary extends Component {
   state = { failed: false };
@@ -38,11 +38,38 @@ const FINISHES = {
   champagne: { color: "#d2ab82", metalness: 0.8, roughness: 0.28, iridescence: 0 },
   pearl: { color: "#efe5d8", metalness: 0.12, roughness: 0.24, iridescence: 0.55 },
 };
-function Helix({ progress, pointer, mobile, finish, paused, onReady }) {
+const origin = new Vector3();
+// Mobile: centre the helix in the free band under the text and size it to fit.
+function fitToBand(state, pose, band, stageHeight) {
+  if (!band || band.bottom - band.top < 40) return null;
+  const vp = state.viewport.getCurrentViewport(state.camera, origin);
+  const unit = vp.height / stageHeight;
+  const { length, diameter } = helixExtent(pose.wind);
+  const a = Math.abs(pose.tilt[1]);
+  const h = length * Math.cos(a) + diameter * Math.sin(a);
+  const w = length * Math.sin(a) + diameter * Math.cos(a);
+  return {
+    y: (stageHeight / 2 - (band.top + band.bottom) / 2) * unit,
+    scale: Math.min(
+      ((band.bottom - band.top) * unit * 0.94) / h,
+      (vp.width * 0.88) / w,
+    ),
+  };
+}
+function Helix({
+  progress,
+  chapter,
+  bands,
+  pointer,
+  mobile,
+  finish,
+  paused,
+  onReady,
+}) {
   const strands = useMemo(() => {
     const initial = scenePose(0, mobile).wind;
     return [0, 1, 2].map((i) => {
-      const strand = createStrand(i, mobile ? 150 : 220, mobile ? 14 : 18);
+      const strand = createStrand(i, mobile ? 200 : 240, mobile ? 16 : 20);
       strand.update(initial);
       const geometry = new BufferGeometry();
       geometry.setAttribute(
@@ -89,20 +116,30 @@ function Helix({ progress, pointer, mobile, finish, paused, onReady }) {
     if (!paused) elapsed.current += delta;
     const pose = scenePose(progress.current, mobile);
     const breath = paused ? 0 : Math.sin(elapsed.current * 0.45) * 0.035;
+    const fit = mobile
+      ? fitToBand(
+          state,
+          pose,
+          bands.current?.list[chapter.current],
+          bands.current?.height,
+        )
+      : null;
+    // Snap on the first frame so the helix never flies in from a default pose.
+    const k = ready.current ? 5 : 1000;
     root.current.position.x = MathUtils.damp(
       root.current.position.x,
-      viewport.width * pose.offsetX,
-      5,
+      fit ? 0 : viewport.width * pose.offsetX,
+      k,
       delta,
     );
     root.current.position.y = MathUtils.damp(
       root.current.position.y,
-      pose.offsetY + breath,
-      5,
+      (fit ? fit.y : pose.offsetY) + breath,
+      k,
       delta,
     );
     root.current.scale.setScalar(
-      MathUtils.damp(root.current.scale.x, pose.scale, 5, delta),
+      MathUtils.damp(root.current.scale.x, fit ? fit.scale : pose.scale, k, delta),
     );
     root.current.rotation.x = MathUtils.damp(
       root.current.rotation.x,
@@ -211,6 +248,8 @@ function StudioEnvironment({ mobile }) {
 }
 export default function Sculpture({
   progress,
+  chapter,
+  bands,
   mobile,
   finish,
   paused,
@@ -220,7 +259,10 @@ export default function Sculpture({
 }) {
   const pointer = useRef({ x: 0, y: 0, drag: 0 });
   const start = useRef(null);
-  const [dpr, setDpr] = useState(mobile ? 1 : 1.5);
+  // Phones need at least 2× or the fibres' edges step visibly.
+  const [dpr, setDpr] = useState(() =>
+    Math.min(window.devicePixelRatio || 1, 2),
+  );
   const move = (e) => {
     pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
     pointer.current.y = (e.clientY / window.innerHeight) * 2 - 1;
@@ -250,7 +292,7 @@ export default function Sculpture({
           camera={{ position: [0, 0, 6.6], fov: 34, near: 0.1, far: 30 }}
           gl={{
             alpha: true,
-            antialias: !mobile,
+            antialias: true,
             powerPreference: "high-performance",
             toneMapping: ACESFilmicToneMapping,
           }}
@@ -261,22 +303,22 @@ export default function Sculpture({
             });
           }}
           fallback={null}
-          performance={{ min: 0.55 }}
           onPointerMissed={() => {}}
         >
           <Suspense fallback={null}>
             <StudioEnvironment mobile={mobile} />
             <Helix
               progress={progress}
+              chapter={chapter}
+              bands={bands}
               pointer={pointer}
               mobile={mobile}
               finish={finish}
               paused={paused}
               onReady={onReady}
             />
-            <AdaptiveDpr pixelated />
           </Suspense>
-          <FrameBudget lower={() => setDpr(mobile ? 0.85 : 1)} />
+          <FrameBudget lower={() => setDpr((d) => Math.max(1.25, d * 0.75))} />
         </Canvas>
       </div>
     </Boundary>

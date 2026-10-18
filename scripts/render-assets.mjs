@@ -36,6 +36,15 @@ try {
     ["helix-loose-small.webp", { wind: 0, spin: -0.3, width: 600, height: 650 }],
     ["helix-mid.webp", { wind: 0.5, spin: 0.66, width: 1000, height: 1100 }],
     ["helix-tight.webp", { wind: 1, spin: 1.76, width: 1000, height: 1100 }],
+    // Phones: same tilt as the mobile scene, fitted to a wide band.
+    ...[
+      ["loose", 0, -0.3, 1.18],
+      ["mid", 0.5, 0.66, 1.37],
+      ["tight", 1, 1.76, 1.75],
+    ].map(([name, wind, spin, scale]) => [
+      `helix-${name}-wide.webp`,
+      { wind, spin, scale, tilt: [-0.14, -1.25 + wind * 0.1], width: 1000, height: 560 },
+    ]),
   ];
   for (const [name, options] of posters)
     await save(name, await page.evaluate((o) => window.renderHelix(o), options));

@@ -301,6 +301,9 @@ svg {
   justify-content: center;
   will-change: transform;
 }
+.poster-motion picture {
+  display: contents;
+}
 .poster-motion img {
   height: 100%;
   width: 100%;
@@ -1327,7 +1330,7 @@ svg {
     height: 300svh;
   }
   .experience-stage {
-    min-height: 690px;
+    min-height: 560px;
   }
   .stage-hairline {
     left: auto;
@@ -1338,14 +1341,14 @@ svg {
   .chapter,
   .chapter-2 {
     left: 24px;
-    top: 132px;
+    top: 116px;
     transform: none;
     width: calc(100% - 48px);
   }
   .chapter .eyebrow {
     font-size: 7px;
     letter-spacing: 0.15em;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
   }
   .tiny-star {
     font-size: 11px;
@@ -1354,13 +1357,20 @@ svg {
   .chapter h1,
   .chapter h2,
   .chapter-2 h2 {
-    font-size: clamp(60px, 16.4vw, 105px);
+    font-size: clamp(48px, 13.4vw, 88px);
     line-height: 0.89;
     letter-spacing: -0.055em;
   }
   .hero-tail {
-    margin-top: 20px;
-    gap: 13px;
+    margin-top: 16px;
+    gap: 12px;
+  }
+  .hero-extra {
+    display: none;
+  }
+  .hero-signature img {
+    width: 40px;
+    height: 40px;
   }
   .hero-tail p {
     font-size: 10px;
@@ -1371,13 +1381,17 @@ svg {
     min-height: 33px;
     gap: 25px;
   }
+  /* Same free band the 3D scene is fitted into (set from Experience.jsx). */
   .poster-motion {
-    top: auto;
-    bottom: 10%;
-    height: 47%;
-    width: 89%;
-    right: -10%;
-    opacity: 0.95;
+    top: var(--band-top, 62%);
+    bottom: var(--band-bottom, 60px);
+    left: 24px;
+    right: 24px;
+    width: auto;
+    height: auto;
+    transition:
+      top 0.6s,
+      bottom 0.6s;
   }
   .chapter-description {
     font-size: 11px;
@@ -1388,10 +1402,14 @@ svg {
     margin-top: 10px;
   }
   .stage-footer {
-    bottom: 23px;
+    bottom: 14px;
     left: 24px;
     right: 24px;
-    height: 40px;
+    height: 32px;
+  }
+  .chapter-nav,
+  .scene-tools .finish-dot {
+    display: none;
   }
   .scroll-cue {
     font-size: 7px;
@@ -1717,23 +1735,18 @@ svg {
   .chapter-2 {
     left: 20px;
     width: calc(100% - 40px);
-    top: 122px;
+    top: 108px;
   }
   .chapter h1,
   .chapter h2,
   .chapter-2 h2 {
-    font-size: 16.9vw;
+    font-size: 13.8vw;
   }
   .chapter .eyebrow {
     font-size: 6px;
   }
   .experience-stage {
-    min-height: 660px;
-  }
-  .poster-motion {
-    height: 44%;
-    bottom: 10%;
-    right: -13%;
+    min-height: 540px;
   }
   .hero-tail {
     margin-top: 20px;
@@ -1894,7 +1907,7 @@ svg {
     font-size: 12px;
   }
   .stage-footer {
-    bottom: 24px;
+    bottom: 14px;
   }
   .scene-tools {
     gap: 0;

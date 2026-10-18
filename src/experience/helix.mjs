@@ -5,7 +5,7 @@
 export const HELIX = {
   height: 3.4,
   tube: 0.12,
-  looseRadius: 0.75,
+  looseRadius: 0.62,
   tightRadius: 0.21,
   looseTurns: 0.15,
   tightTurns: 2.8,
@@ -19,7 +19,7 @@ export function strandPoint(t, strand, wind, out = [0, 0, 0]) {
   const loose = 1 - e;
   const radius =
     mix(HELIX.looseRadius, HELIX.tightRadius, e) +
-    loose * 0.2 * Math.sin(TAU * (t + strand / 3));
+    loose * 0.18 * Math.sin(TAU * (t + strand / 3));
   // Twist around the middle so both ends wind in, like a fibre being wrung.
   const theta =
     TAU * mix(HELIX.looseTurns, HELIX.tightTurns, e) * (t - 0.5) +
@@ -28,6 +28,16 @@ export function strandPoint(t, strand, wind, out = [0, 0, 0]) {
   out[1] = (t - 0.5) * HELIX.height + loose * (strand - 1) * 0.18;
   out[2] = radius * Math.sin(theta);
   return out;
+}
+
+/** Bounding length (along the axis) and diameter of the whole helix, for fitting it on screen. */
+export function helixExtent(wind) {
+  const e = wind * wind * (3 - 2 * wind);
+  const radius = mix(HELIX.looseRadius + 0.18, HELIX.tightRadius, e);
+  return {
+    length: HELIX.height + (1 - e) * 0.36 + HELIX.tube * 2,
+    diameter: 2 * (radius + HELIX.tube),
+  };
 }
 
 /** One fibre as an indexed tube with rounded, tapered ends. */

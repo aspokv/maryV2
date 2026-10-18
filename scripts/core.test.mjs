@@ -53,7 +53,7 @@ test("schema não inventa estrelas ou condição de médico", () => {
 });
 
 import { scenePose } from "../src/experience/choreography.mjs";
-import { createStrand, HELIX } from "../src/experience/helix.mjs";
+import { createStrand, helixExtent, HELIX } from "../src/experience/helix.mjs";
 test("coreografia mantém transformações finitas e enrola as fibras até a hélice", () => {
   for (const mobile of [false, true]) {
     let previous = -1;
@@ -106,4 +106,17 @@ test("fibras do colágeno ficam finitas, fechadas nas pontas e próximas na hél
     if (wind === 0) assert.ok(spread > HELIX.tightRadius * 2);
   }
   assert.ok(strands[0].indices.every((v) => v < 121 * 12));
+});
+test("a medida usada para encaixar a hélice na tela contém todas as fibras", () => {
+  for (const wind of [0, 0.25, 0.5, 0.75, 1]) {
+    const { length, diameter } = helixExtent(wind);
+    for (const i of [0, 1, 2]) {
+      const s = createStrand(i, 120, 12);
+      s.update(wind);
+      for (let v = 0; v < s.positions.length; v += 3) {
+        assert.ok(Math.abs(s.positions[v + 1]) <= length / 2 + 1e-6);
+        assert.ok(Math.hypot(s.positions[v], s.positions[v + 2]) <= diameter / 2 + 1e-6);
+      }
+    }
+  }
 });

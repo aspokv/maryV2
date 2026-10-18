@@ -8,11 +8,13 @@ export const smooth = (a, b, x) => {
 export function scenePose(progress, mobile = false) {
   const p = clamp(progress);
   const cross = smooth(0.5, 0.78, p);
+  const wind = smooth(0.06, 0.74, p);
   return {
     // Tilt is applied to the whole helix; spin turns it around its own axis.
     tilt: [
       -0.14 + Math.sin(p * Math.PI) * 0.1,
-      mobile ? -0.4 : -0.42 + cross * 0.84,
+      // Phones: loose fibres lie flatter to use the wide band under the text.
+      mobile ? -1.25 + wind * 0.1 : -0.42 + cross * 0.84,
     ],
     spin: -0.3 + p * 2.4,
     scale: mobile
@@ -22,7 +24,7 @@ export function scenePose(progress, mobile = false) {
     offsetY: mobile ? -0.92 : -0.04,
     cameraZ: mobile ? 6.4 : 6.6 - Math.sin(p * Math.PI) * 0.45,
     // 0: three loose fibres · 1: a tight triple helix.
-    wind: smooth(0.06, 0.74, p),
+    wind,
     light: 1.1 + smooth(0, 0.16, p) * 0.45,
   };
 }

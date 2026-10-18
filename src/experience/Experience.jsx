@@ -17,6 +17,9 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Experience() {
   const section = useRef();
   const progress = useRef(0);
+  const chapterRef = useRef(0);
+  // Mobile only: the free band between each chapter's text and the stage footer.
+  const bands = useRef(null);
   const [chapter, setChapter] = useState(0);
   const [ready, setReady] = useState(false);
   const [render3D, setRender3D] = useState(false);
@@ -96,7 +99,9 @@ export default function Experience() {
           scrub: 0.8,
           onUpdate: (self) => {
             progress.current = self.progress;
-            setChapter(self.progress < 0.29 ? 0 : self.progress < 0.64 ? 1 : 2);
+            const c = self.progress < 0.29 ? 0 : self.progress < 0.64 ? 1 : 2;
+            chapterRef.current = c;
+            setChapter(c);
           },
         },
       });
@@ -138,9 +143,9 @@ export default function Experience() {
         .to(
           ".poster-motion",
           {
-            rotation: -14,
+            rotation: mobile ? 0 : -14,
             scale: 1.02,
-            xPercent: mobile ? -2 : -63,
+            xPercent: mobile ? 0 : -63,
             duration: 0.55,
             ease: "power1.inOut",
           },
@@ -155,6 +160,37 @@ export default function Experience() {
     }, el);
     return () => ctx.revert();
   }, [reduced, mobile]);
+  useEffect(() => {
+    const stage = section.current.querySelector(".experience-stage");
+    const measure = () => {
+      if (!matchMedia("(max-width: 700px)").matches) {
+        bands.current = null;
+        return;
+      }
+      const bottom = stage.querySelector(".stage-footer").offsetTop - 14;
+      bands.current = {
+        height: stage.offsetHeight,
+        list: [...stage.querySelectorAll(".chapter")].map((c) => ({
+          top: c.offsetTop + c.offsetHeight + 16,
+          bottom,
+        })),
+      };
+      placePoster(stage, bands.current, chapterRef.current);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(stage);
+    document.fonts?.ready.then(measure);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (bands.current)
+      placePoster(
+        section.current.querySelector(".experience-stage"),
+        bands.current,
+        chapter,
+      );
+  }, [chapter]);
   const goTo = (i) => {
     if (i > 2) {
       document
@@ -180,38 +216,58 @@ export default function Experience() {
         <div className="stage-hairline" aria-hidden="true" />
         <div className="sculpture-poster" aria-hidden="true">
           <div className="poster-motion">
-            <img
-              className="poster-loose"
-              src="/images/helix-loose.webp"
-              srcSet="/images/helix-loose-small.webp 600w, /images/helix-loose.webp 1200w"
-              sizes="(max-width:700px) 100vw, 65vw"
-              alt=""
-              fetchPriority="high"
-              width="1200"
-              height="1300"
-            />
-            <img
-              className="poster-mid"
-              src="/images/helix-mid.webp"
-              alt=""
-              width="1000"
-              height="1100"
-              loading="lazy"
-            />
-            <img
-              className="poster-tight"
-              src="/images/helix-tight.webp"
-              alt=""
-              width="1000"
-              height="1100"
-              loading="lazy"
-            />
+            <picture>
+              <source
+                media="(max-width: 700px)"
+                srcSet="/images/helix-loose-wide.webp"
+              />
+              <img
+                className="poster-loose"
+                src="/images/helix-loose.webp"
+                srcSet="/images/helix-loose-small.webp 600w, /images/helix-loose.webp 1200w"
+                sizes="65vw"
+                alt=""
+                fetchPriority="high"
+                width="1200"
+                height="1300"
+              />
+            </picture>
+            <picture>
+              <source
+                media="(max-width: 700px)"
+                srcSet="/images/helix-mid-wide.webp"
+              />
+              <img
+                className="poster-mid"
+                src="/images/helix-mid.webp"
+                alt=""
+                width="1000"
+                height="1100"
+                loading="lazy"
+              />
+            </picture>
+            <picture>
+              <source
+                media="(max-width: 700px)"
+                srcSet="/images/helix-tight-wide.webp"
+              />
+              <img
+                className="poster-tight"
+                src="/images/helix-tight.webp"
+                alt=""
+                width="1000"
+                height="1100"
+                loading="lazy"
+              />
+            </picture>
           </div>
         </div>
         {render3D && !reduced && (
           <Suspense fallback={null}>
             <Sculpture
               progress={progress}
+              chapter={chapterRef}
+              bands={bands}
               mobile={mobile}
               finish={finish}
               paused={paused}
@@ -240,8 +296,10 @@ export default function Experience() {
           <div className="chapter-extra hero-tail">
             <p>
               Rejuvenescimento com propósito e naturalidade.
-              <br />
-              Uma conversa antes de qualquer escolha.
+              <span className="hero-extra">
+                <br />
+                Uma conversa antes de qualquer escolha.
+              </span>
             </p>
             <div className="hero-signature">
               <img
@@ -361,6 +419,11 @@ export default function Experience() {
       </div>
     </section>
   );
+}
+function placePoster(stage, bands, chapter) {
+  const band = bands.list[chapter];
+  stage.style.setProperty("--band-top", `${band.top}px`);
+  stage.style.setProperty("--band-bottom", `${bands.height - band.bottom}px`);
 }
 function Line({ children }) {
   return (

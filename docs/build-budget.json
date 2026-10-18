@@ -1,33 +1,33 @@
 {
   "version": 3,
   "routes": 9,
-  "static_html_bytes": 15730,
+  "static_html_bytes": 15839,
   "javascript": [
     {
-      "name": "index-C3-nnLO6.js",
-      "bytes": 492605,
-      "gzip_bytes": 165692,
+      "name": "index-Bl34vTk9.js",
+      "bytes": 493790,
+      "gzip_bytes": 165982,
       "lazy_scene": false
     },
     {
-      "name": "Sculpture-BRiWLC2o.js",
-      "bytes": 948507,
-      "gzip_bytes": 261063,
+      "name": "Sculpture-0ZE_fiu7.js",
+      "bytes": 948767,
+      "gzip_bytes": 261131,
       "lazy_scene": true
     }
   ],
   "assets": {
     "images/helix-loose.webp": {
-      "bytes": 52560,
-      "gzip_bytes": 50866
+      "bytes": 52760,
+      "gzip_bytes": 51074
     },
     "images/helix-loose-small.webp": {
-      "bytes": 23542,
-      "gzip_bytes": 23212
+      "bytes": 23784,
+      "gzip_bytes": 23405
     },
     "images/helix-mid.webp": {
-      "bytes": 40318,
-      "gzip_bytes": 39091
+      "bytes": 38582,
+      "gzip_bytes": 37391
     },
     "images/helix-tight.webp": {
       "bytes": 28714,
@@ -36,6 +36,18 @@
     "images/mariana-avatar.webp": {
       "bytes": 3220,
       "gzip_bytes": 3085
+    },
+    "images/helix-loose-wide.webp": {
+      "bytes": 20728,
+      "gzip_bytes": 20048
+    },
+    "images/helix-mid-wide.webp": {
+      "bytes": 28148,
+      "gzip_bytes": 26917
+    },
+    "images/helix-tight-wide.webp": {
+      "bytes": 26074,
+      "gzip_bytes": 25427
     }
   },
   "note": "File sizes only, not measured LCP/INP/CLS or actual transfer. Optional scene is lazy loaded; the helix is generated in code, so there is no model download."
