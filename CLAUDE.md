@@ -2,6 +2,8 @@
 
 Landing page pública da Dra. Mariana Strey, biomédica esteta (CRBM-5 6569), em Caxias do Sul. O painel de gestão da clínica é outro projeto ([aspokv/mary-gestao](https://github.com/aspokv/mary-gestao)); não mexer nele daqui.
 
+Resumo para o Nicolas, em linguagem simples: [RESUMO.md](RESUMO.md). **Atualize o RESUMO.md no fim de todo trabalho** (pedido dele, 2026-11-13).
+
 **Este repositório é público.** Nada de segredo, token, `.env`, planilha, dado de paciente ou foto original aqui. Fotos de antes e depois entram só como os arquivos já preparados (ver "Antes e depois").
 
 ## Autorização (Nicolas, 2026-11-13)

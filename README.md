@@ -1,5 +1,7 @@
 # Mariana Strey — Além do padrão / V2
 
+> Resumo do projeto (o que é, onde está no ar, decisões, pendências, como retomar): **[RESUMO.md](RESUMO.md)**.
+
 Experiência editorial com 3D integrado à landing principal. A nova direção substitui a versão anterior: uma narrativa curta em três atos, seguida da apresentação da profissional, cuidados expansíveis e contato.
 
 ## Rodar
