@@ -55,7 +55,8 @@ Node 22+.
   - DNS no Cloudflare: A `@` e A `www` para 187.127.48.117, **DNS only** (sem nuvem laranja), para o Let's Encrypt do Coolify funcionar.
   - O `painel.` é a gestão e não deve ser alterado.
 - **Endereço de teste:** https://eckdqikjnbm9sgr5cev4wl57.187.127.48.117.sslip.io
-- O site antigo (V1) era o app **MAARI** (`wqkfoiqo6tvpspxc4otpfadt`, repo privado Mariana-Site). Foi parado em 2026-11-13 e não foi apagado.
+- O site antigo (V1) é o app **MAARI** (`wqkfoiqo6tvpspxc4otpfadt`, repo privado Mariana-Site). Em 2026-11-13 ainda rodava só no endereço de teste dele. Parar no Coolify quando o Nicolas decidir (parar, não apagar).
+- Publicação automática: webhook do GitHub (push) → `https://panel.aiexec.com.br/webhooks/source/github/events/manual`, com o segredo guardado só no GitHub e no Coolify (2026-11-13).
 
 ## Pendente
 
