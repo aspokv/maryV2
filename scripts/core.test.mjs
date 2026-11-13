@@ -25,12 +25,14 @@ test("atribuição descarta PII e parâmetros livres", () => {
   );
 });
 test("versão incompleta não permite indexação de produção", () => {
-  assert.equal(canRelease(site), false);
+  assert.equal(canRelease({ ...site, hours: "", qualification: "" }), false);
+  assert.equal(canRelease({ ...site, hours: "validado", qualification: "" }), false, "sem habilitação não publica");
   assert.equal(
     canRelease({
       ...site,
       registration: "validado",
-      companyRegistration: "validado",
+      // Ela atende como pessoa física: sem CNPJ, o site publica assim mesmo.
+      companyRegistration: "",
       qualification: "validado",
       hours: "validado",
       domain: "https://example.org",
@@ -49,7 +51,74 @@ test("schema não inventa estrelas ou condição de médico", () => {
   assert.ok(!data.includes("AggregateRating"));
   assert.ok(!data.includes("Physician"));
   assert.ok(!data.includes("Review"));
-  assert.equal(procedures.length, 5);
+  assert.equal(procedures.length, 6);
+  assert.deepEqual(
+    procedures.map((p) => p.number),
+    ["01", "02", "03", "04", "05", "06"],
+  );
+});
+test("não inventa empresa: ela atende como pessoa física, sem razão social nem CNPJ", () => {
+  assert.equal(site.companyRegistration, "");
+  assert.ok(!/ltda|eireli|\bme\b|s\/a|cnpj/i.test(site.legalName));
+});
+
+import { existsSync } from "node:fs";
+import { resultCaption, resultCases } from "../src/lib.mjs";
+test("antes e depois: legenda exigida pelo CFBM (paciente real, TCLE, sem garantia, CRBM, habilitação)", () => {
+  const legenda = resultCaption({ ...site, qualification: "Habilitação X" });
+  for (const trecho of ["Paciente real", "sem filtro", "TCLE", "não é garantido", site.registration, "Habilitação X"])
+    assert.ok(legenda.includes(trecho), `falta "${trecho}"`);
+});
+test("antes e depois: espaço reservado só na versão de revisão; publicado sem fotos, a seção some", () => {
+  const pronto = {
+    ...site,
+    qualification: "validado",
+    hours: "validado",
+    results: [],
+  };
+  assert.equal(canRelease(pronto), true);
+  assert.deepEqual(resultCases(pronto), []);
+  assert.equal(resultCases({ ...pronto, hours: "" })[0].placeholder, true);
+});
+test("cada caso de antes e depois tem procedimento, descrições e os 8 arquivos preparados", () => {
+  for (const r of site.results) {
+    assert.match(r.slug, /^[a-z0-9-]+$/);
+    assert.ok(r.procedure && r.interval && r.alt?.before && r.alt?.after, `${r.slug}: dados incompletos`);
+    for (const lado of ["antes", "depois"])
+      for (const w of [600, 1200])
+        for (const ext of ["avif", "webp"])
+          assert.ok(existsSync(`public/images/resultados/${r.slug}-${lado}-${w}.${ext}`), `${r.slug}-${lado}-${w}.${ext}`);
+  }
+  // Com fotos reais, a legenda precisa da habilitação: não publica sem ela.
+  if (site.results.length) assert.ok(site.qualification, "falta a habilitação para a legenda do antes e depois");
+});
+
+import { afterClip, fiberPath, fiberPoints, fiberX, sweepOf } from "../src/experience/fiber.mjs";
+test("fibra do antes e depois: começa na borda esquerda, atravessa e termina na direita", () => {
+  const xs = (p) => fiberPoints(p, 0.3).map(([x]) => x);
+  // Nas pontas, o que sobra do outro lado fica debaixo do corpo da fibra (12 px de largura).
+  assert.ok(Math.max(...xs(0)) <= 2, "começo mostra o depois");
+  assert.ok(Math.min(...xs(1)) >= 98, "fim ainda mostra o antes");
+  let anterior = -Infinity;
+  for (let i = 0; i <= 100; i++) {
+    const p = i / 100;
+    const pts = fiberPoints(p, p);
+    assert.ok(pts.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y)));
+    assert.ok(pts[0][1] < 0 && pts.at(-1)[1] > 100, "a fibra passa das bordas de cima e de baixo");
+    for (let k = 1; k < pts.length; k++) assert.ok(pts[k][1] > pts[k - 1][1]);
+    assert.ok(fiberX(p) >= anterior, "a fibra nunca volta");
+    anterior = fiberX(p);
+    assert.match(fiberPath(pts), /^M[\d.-]+ [\d.-]+(Q[\d. -]+)+L[\d.-]+ [\d.-]+$/);
+    assert.ok(afterClip(pts).startsWith("polygon("));
+  }
+});
+test("rolagem: primeiro a fibra desce, depois atravessa, no fim segura o depois", () => {
+  assert.deepEqual(sweepOf(0), { draw: 0, p: 0 });
+  assert.equal(sweepOf(0.14).draw, 1);
+  assert.equal(sweepOf(0.14).p, 0);
+  assert.equal(sweepOf(0.86).p, 1);
+  assert.deepEqual(sweepOf(1), { draw: 1, p: 1 });
+  assert.ok(sweepOf(0.5).p > 0.4 && sweepOf(0.5).p < 0.6);
 });
 
 import { scenePose } from "../src/experience/choreography.mjs";

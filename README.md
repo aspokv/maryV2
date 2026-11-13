@@ -13,16 +13,18 @@ npm run check
 npm run build
 ```
 
-A saída estática está em `dist/`. Nove rotas são pré-renderizadas. Docker/Nginx continuam disponíveis. O build não precisa de Python nem de bibliotecas gráficas: os modelos e renders já estão incluídos.
+A saída estática está em `dist/`. Dez rotas são pré-renderizadas. Docker/Nginx continuam disponíveis. O build não precisa de Python nem de bibliotecas gráficas: os modelos e renders já estão incluídos.
 
 ## Narrativa e interface
 
 1. **Identidade:** abertura com “A sua beleza não segue um padrão”, três fibras soltas, retrato e CRBM da Mariana e convite para conversar.
 2. **Proporção:** as fibras começam a se enrolar; títulos entram linha a linha acompanhando o scroll.
 3. **Cuidado:** as fibras fecham a tripla hélice do colágeno; a composição troca de lado.
-4. **Mariana:** transição para nude e retrato real. Atendimento feito só por ela (“Quem te avalia é quem te atende”) e três etapas curtas da conversa.
-5. **Cuidados:** quatro linhas expansíveis e acesso ao conteúdo sobre textura da pele.
-6. **Agendamento:** três perguntas, WhatsApp, endereço e Instagram.
+4. **Resultado real (antes e depois):** uma fibra da hélice atravessa a foto conforme a rolagem; por onde ela passa, o antes vira o depois. No fim, um controle permite arrastar e comparar. Título e foto ficam fixos na tela enquanto a fibra passa (palco `sticky`, rolagem nativa). Sem fotos, mostra o espaço reservado na versão de revisão.
+5. **Mariana:** transição para nude e retrato real. Atendimento feito só por ela (“Quem te avalia é quem te atende”).
+6. **O que ela faz:** seis procedimentos com o nome técnico (Perfiloplastia, Harmonização facial, Preenchimento labial, Bioestimuladores de colágeno, Toxina botulínica, Microagulhamento) e a explicação simples.
+7. **Primeira consulta:** quatro passos, ligados pela mesma fibra.
+8. **Agendamento:** três perguntas, WhatsApp, endereço e Instagram.
 
 O scroll permanece nativo, sem interceptar a rolagem. A composição móvel tem enquadramento próprio. O cabeçalho mantém acesso ao agendamento; a barra inferior aparece após a narrativa para não cobrir os controles do objeto.
 
@@ -30,12 +32,14 @@ O scroll permanece nativo, sem interceptar a rolagem. A composição móvel tem 
 
 ```text
 src/
-  App.jsx                     # Navegação, conteúdo, páginas auxiliares e privacidade
+  App.jsx                     # Navegação, conteúdo, primeira consulta, páginas auxiliares e privacidade
   components/UI.jsx           # CTA, retrato, marca e ícones
+  components/Results.jsx      # Antes e depois: fibra que atravessa a foto + controle de comparação
   experience/
     Experience.jsx            # Palco sticky, títulos e timeline GSAP
     Sculpture.jsx             # Canvas R3F, materiais, luz, interação e limites de DPR
     helix.mjs                 # Geometria da tripla hélice (fibras solto → enrolado)
+    fiber.mjs                 # Fibra do antes e depois: onda, recorte e coreografia da rolagem
     choreography.mjs          # Poses, giro e quanto a hélice está enrolada
   site.config.mjs             # Dados reais, conteúdo e revisão
   lib.mjs                     # WhatsApp/UTMs, schema e gate de divulgação
@@ -49,6 +53,7 @@ scripts/
   core.test.mjs
   release-check.mjs
   render-assets.mjs           # Gera renders da hélice, avatar e imagem de compartilhamento
+  preparar-fotos.mjs          # Antes e depois: corte igual, sem metadados, AVIF/WebP 600/1200
 ```
 
 ## 3D
@@ -74,7 +79,13 @@ Tirada do feed dela: marfim (`#f7f2ec`), nude (`#ede3d8`), caramelo (`#875935`),
 
 ## Conteúdo e publicação
 
-Esta é uma versão privada para revisão. O CRBM-5 6569 veio da bio pública do Instagram (@dramarianastrey). Registro PJ, habilitação, horários, autorização das fotos, escopo profissional, política e demais dados precisam de confirmação. `canRelease()` mantém `noindex` enquanto esses dados e aprovações não estão completos. Não preencher por inferência.
+Domínio: https://dramarianastrey.com.br. O CRBM-5 6569 veio da bio pública do Instagram (@dramarianastrey).
+
+Conteúdo, retrato, escopo e privacidade foram aprovados pelo Nicolas em nome da Mariana (autorização total, 2026-11-13). Ela atende como pessoa física, sem CNPJ.
+
+Faltam **horários** e **habilitação**. Enquanto isso, `canRelease()` mantém `noindex`. Não preencher por inferência.
+
+Regras, deploy e o passo a passo das fotos de antes e depois: [CLAUDE.md](CLAUDE.md).
 
 O retrato e os dados públicos vieram das fontes registradas em `docs/estrategia-mariana-strey.md`. O documento da V1 continua como pesquisa e referência de conteúdo/compliance; seus wireframes, direção de arte e orçamento técnico foram substituídos por esta V2.
 

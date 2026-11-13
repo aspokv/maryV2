@@ -1957,3 +1957,480 @@ svg {
     font-size: 44px;
   }
 }
+
+/* ---------- Before/after: the collagen fibre crossing the photo ---------- */
+.about-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--accent);
+  padding: 8px 0 4px;
+}
+.about-next svg {
+  width: 16px;
+}
+.results {
+  background: var(--paper);
+  padding: 0 var(--gutter);
+}
+/* Tall track + sticky stage: the scroll stays native, the photo and its title stay put. */
+.results-track {
+  position: relative;
+  height: 240vh;
+  height: 240svh;
+}
+.results-track.is-static {
+  height: auto;
+  padding: 40px 0 90px;
+}
+.results-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  grid-template-columns: auto minmax(260px, 360px);
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "frame intro"
+    "frame aside";
+  column-gap: 64px;
+  justify-content: center;
+  align-content: center;
+  padding: 120px 0 36px;
+}
+.is-static .results-stage {
+  position: static;
+  height: auto;
+  padding: 0;
+}
+.results-intro {
+  grid-area: intro;
+  align-self: start;
+}
+.results-intro h2 {
+  font-size: clamp(46px, 4.4vw, 72px);
+  line-height: 0.98;
+  margin: 22px 0 18px;
+}
+.results-intro h2 > * {
+  display: block;
+}
+.results-intro h2 em {
+  color: var(--accent);
+}
+.results-intro p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 320px;
+}
+.ba-frame {
+  grid-area: frame;
+  position: relative;
+  height: min(calc(100svh - 160px), 780px);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #e2d5c6;
+  isolation: isolate;
+  box-shadow: 0 45px 80px -55px rgba(58, 42, 32, 0.55);
+}
+.ba-layer {
+  position: absolute;
+  inset: 0;
+}
+.ba-layer picture,
+.ba-layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ba-after {
+  will-change: clip-path;
+}
+.ba-fiber {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  /* The fibre is drawn down from the top as it "arrives" from the helix. */
+  clip-path: inset(0 0 calc((1 - var(--draw)) * 100%) 0);
+}
+.ba-fiber path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Same copper as the 3D helix: shadow, body, mid-tone, light and a thin specular line. */
+.fiber-shadow {
+  stroke: rgba(58, 42, 32, 0.24);
+  stroke-width: 17px;
+  transform: translate(0.45px, 0.5px);
+}
+.fiber-body {
+  stroke: #6f4527;
+  stroke-width: 12px;
+}
+.fiber-mid {
+  stroke: #a8713f;
+  stroke-width: 9px;
+  transform: translateX(-0.12px);
+}
+.fiber-light {
+  stroke: #d9ae7f;
+  stroke-width: 4.5px;
+  transform: translateX(-0.4px);
+}
+.fiber-spec {
+  stroke: #fff2df;
+  stroke-width: 1.6px;
+  opacity: 0.9;
+  transform: translateX(-0.55px);
+}
+.ba-tag {
+  position: absolute;
+  top: 16px;
+  z-index: 2;
+  padding: 7px 11px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: rgba(247, 242, 236, 0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.ba-tag-after {
+  left: 16px;
+  opacity: clamp(0, calc((var(--p) - 0.08) * 6), 1);
+}
+.ba-tag-before {
+  right: 16px;
+  opacity: clamp(0, calc((0.92 - var(--p)) * 6), 1);
+}
+/* Reserved slot until her photos arrive: the same words, before and after, so the sweep still reads. */
+.ba-ph {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.ba-ph span {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(60px, 11vh, 118px);
+  letter-spacing: -0.04em;
+}
+.ba-ph-before {
+  background: radial-gradient(120% 90% at 70% 30%, #efe4d8 0%, #e3d3c2 60%, #d6c2ad 100%);
+  color: rgba(58, 42, 32, 0.34);
+}
+.ba-ph-after {
+  background: radial-gradient(120% 90% at 30% 30%, #fbf6ef 0%, #f3e6d6 55%, #ead6bd 100%);
+  color: rgba(135, 89, 53, 0.6);
+}
+.ba-aside {
+  grid-area: aside;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-bottom: 6px;
+}
+.ba-procedure {
+  font-family: var(--font-display);
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.ba-cases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ba-cases button {
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 10px;
+  border: 1px solid var(--line);
+}
+.ba-cases button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.ba-range {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ba-range input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  cursor: ew-resize;
+}
+.ba-range input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.ba-range input::-webkit-slider-runnable-track {
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent) calc(var(--p) * 100%), var(--line) 0);
+}
+.ba-range input::-moz-range-track {
+  height: 2px;
+  background: var(--line);
+}
+.ba-range input::-moz-range-progress {
+  height: 2px;
+  background: var(--accent);
+}
+.ba-range input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 32%, #f8e2c4, #b98250 55%, #6f4527);
+  box-shadow: 0 4px 12px rgba(58, 42, 32, 0.35);
+}
+.ba-range input::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 32%, #f8e2c4, #b98250 55%, #6f4527);
+  box-shadow: 0 4px 12px rgba(58, 42, 32, 0.35);
+}
+.ba-legal {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 300px;
+}
+
+/* Technical names can wrap ("Bioestimuladores de colágeno"): keep the two lines together. */
+.care-name {
+  line-height: 1.08;
+}
+
+/* ---------- First consultation: four steps tied by the same fibre ---------- */
+.visit {
+  padding: 110px var(--gutter) 90px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.3fr;
+  gap: 7vw;
+  max-width: 1600px;
+  margin: auto;
+}
+.visit-heading h2 {
+  font-size: clamp(55px, 5.6vw, 88px);
+  line-height: 0.98;
+  margin: 30px 0 25px;
+}
+.visit-heading h2 em {
+  color: var(--accent);
+}
+.visit-heading p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 320px;
+}
+.visit-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.visit-steps::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 30px;
+  bottom: 30px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #6f4527, #d9ae7f 45%, #a8713f);
+}
+.visit-steps li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 26px;
+  padding: 20px 0;
+}
+.visit-number {
+  position: relative;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  margin-top: 4px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  color: var(--accent);
+  background: var(--paper);
+  border: 1px solid var(--accent);
+}
+.visit-steps h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 31px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.visit-steps p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 470px;
+}
+.visit-body > .contact {
+  margin: 22px 0 0 56px;
+}
+
+@media (max-width: 1050px) {
+  .results-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "intro"
+      "frame"
+      "aside";
+    justify-items: center;
+    row-gap: 16px;
+  }
+  .results-intro,
+  .ba-aside {
+    width: 100%;
+    max-width: 560px;
+  }
+  .results-intro p {
+    display: none;
+  }
+  .results-intro h2 {
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.02;
+    margin: 10px 0 0;
+  }
+  .results-intro h2 > * {
+    display: inline;
+  }
+  .ba-frame {
+    height: min(calc(100svh - 380px), 780px);
+  }
+}
+/* Phone first: everything below fits one screen while the fibre crosses the photo. */
+@media (max-width: 700px) {
+  .results {
+    padding: 0 24px;
+  }
+  .results-intro .eyebrow {
+    font-size: 8px;
+  }
+  .results-intro h2 {
+    font-size: 30px;
+    margin-top: 8px;
+  }
+  .results-track {
+    height: 230svh;
+  }
+  .results-track.is-static {
+    padding: 28px 0 60px;
+  }
+  .results-stage {
+    padding: 90px 0 14px;
+    row-gap: 12px;
+  }
+  .ba-frame {
+    height: min(calc(100svh - 370px), calc((100vw - 48px) * 1.25));
+  }
+  .ba-aside {
+    gap: 8px;
+  }
+  .ba-procedure {
+    font-size: 24px;
+  }
+  .ba-legal {
+    font-size: 9px;
+    max-width: none;
+  }
+  .ba-tag {
+    top: 12px;
+    font-size: 8px;
+    padding: 6px 9px;
+  }
+  .ba-tag-after {
+    left: 12px;
+  }
+  .ba-tag-before {
+    right: 12px;
+  }
+  .fiber-shadow {
+    stroke-width: 14px;
+  }
+  .fiber-body {
+    stroke-width: 10px;
+  }
+  .fiber-mid {
+    stroke-width: 7px;
+  }
+  .fiber-light {
+    stroke-width: 3.5px;
+  }
+  .fiber-spec {
+    stroke-width: 1.3px;
+  }
+  .visit {
+    display: block;
+    padding: 60px 24px 40px;
+  }
+  .visit-heading .eyebrow {
+    font-size: 8px;
+  }
+  .visit-heading h2 {
+    font-size: clamp(48px, 13.4vw, 64px);
+    margin: 22px 0 16px;
+  }
+  .visit-heading p {
+    font-size: 12px;
+  }
+  .visit-steps {
+    margin-top: 26px;
+  }
+  .visit-steps li {
+    gap: 18px;
+    padding: 16px 0;
+  }
+  .visit-steps h3 {
+    font-size: 25px;
+  }
+  .visit-steps p {
+    font-size: 12px;
+  }
+  .visit-body > .contact {
+    margin-left: 48px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ba-tag {
+    transition: none;
+  }
+}

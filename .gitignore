@@ -4,3 +4,7 @@ dist/
 .env.local
 .openai/*.tar.gz
 *.log
+# Original patient photos never enter this public repo: only the stripped files from scripts/preparar-fotos.mjs.
+fotos-originais/
+*.heic
+*.HEIC

@@ -33,10 +33,10 @@ export function whatsappHref({
 export function mapHref() {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.name}, ${site.street}, ${site.suite}, ${site.neighborhood}, ${site.city}, ${site.region}`)}`;
 }
+// She works as a natural person: there is no company or CNPJ to wait for.
 export function canRelease(config = site) {
   return Boolean(
     config.registration &&
-      config.companyRegistration &&
       config.qualification &&
       config.hours &&
       config.domain &&
@@ -48,6 +48,23 @@ export function canRelease(config = site) {
       config.privacyApproved,
   );
 }
+/**
+ * Caption every before/after must carry (Código de Ética da Biomedicina, Res. CFBM 330/2020):
+ * real patient, written consent (TCLE), no guaranteed result, name, CRBM and qualifications.
+ */
+export function resultCaption(config = site) {
+  const who = [config.name, config.profession, config.registration, config.qualification]
+    .filter(Boolean)
+    .join(" · ");
+  return `Paciente real da Mariana. Fotos sem filtro e sem retoque, divulgadas com autorização da paciente em termo de consentimento (TCLE). O resultado varia de pessoa para pessoa e não é garantido. ${who}.`;
+}
+
+/** Real cases when there are photos; a reserved slot only while the site is still a review version. */
+export function resultCases(config = site) {
+  if (config.results.length) return config.results;
+  return canRelease(config) ? [] : [{ slug: "reserva", procedure: "Casos reais em breve", interval: "", placeholder: true }];
+}
+
 export function schema(origin) {
   return {
     "@context": "https://schema.org",

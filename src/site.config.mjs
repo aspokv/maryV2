@@ -1,10 +1,12 @@
 export const site = {
   name: "Dra. Mariana Strey",
-  legalName: "Mariana Strey Estética e Saúde Ltda.",
+  // She works alone, as a natural person: no company name and no CNPJ (Nicolas, 2026-11-07). Never invent one.
+  legalName: "Mariana Strey",
   profession: "Biomédica esteta",
   // Public Instagram bio (@dramarianastrey), read 2026-10-18.
   registration: "CRBM-5 6569",
   companyRegistration: "",
+  // Her registered qualification(s) exactly as on the CRBM record. Required before release and on every before/after.
   qualification: "",
   whatsapp: "5554999507227",
   phoneDisplay: "(54) 99950-7227",
@@ -16,18 +18,27 @@ export const site = {
   city: "Caxias do Sul",
   region: "RS",
   postcode: "95010-040",
+  // Opening hours as she gives them. Required before release.
   hours: "",
-  domain: "",
+  domain: "https://dramarianastrey.com.br",
   portrait: "/images/mariana-800.webp",
-  portraitApproved: false,
-  businessDataApproved: false,
-  clinicalCopyApproved: false,
-  legalScopeApproved: false,
-  privacyApproved: false,
+  // Approved by Nicolas on Mariana's behalf (she gave him full authorization), 2026-11-13.
+  portraitApproved: true,
+  businessDataApproved: true,
+  clinicalCopyApproved: true,
+  legalScopeApproved: true,
+  privacyApproved: true,
   googleProfile: "",
   googleReviewLink: "",
-  privacyContact: "",
+  // Same channel as the clinic panel's approved privacy notice.
+  privacyContact: "Mariana Strey, pelo WhatsApp (54) 99950-7227",
   reviews: [],
+  // Before/after cases. Every patient has signed consent for publication (Nicolas, 2026-11-13).
+  // Photos: real, no filter or retouch, same framing. Prepare them with scripts/preparar-fotos.mjs,
+  // which strips all metadata and writes /images/resultados/<slug>-antes|depois-600|1200.avif|webp.
+  // Originals never enter this repository (it is public).
+  // { slug: "perfil-1", procedure: "Perfiloplastia", interval: "30 dias depois",
+  //   alt: { before: "Perfil da paciente antes…", after: "O mesmo perfil 30 dias depois…" } }
   results: [],
   credentials: [],
   analytics: {
@@ -41,8 +52,26 @@ export const site = {
 
 export const procedures = [
   {
-    slug: "harmonizacao-facial",
+    // "Rejuvenescimento | Perfiloplastia" and "Técnicas autorais" are in her public Instagram bio.
+    slug: "perfiloplastia",
     number: "01",
+    label: "Perfiloplastia",
+    short: "O perfil em equilíbrio.",
+    intro:
+      "Uma avaliação do rosto visto de lado: nariz, lábios, queixo e mandíbula, buscando equilíbrio entre as partes com técnicas injetáveis, quando indicadas.",
+    audience:
+      "Para quem quer harmonizar o perfil, como a projeção do queixo, o contorno da mandíbula ou a relação entre nariz e lábios.",
+    focus: "Proporção entre nariz, lábios, queixo e mandíbula, respeitando a sua anatomia.",
+    duration: "Depende das regiões e dos produtos indicados; é conversada na avaliação.",
+    session: "Planejada na avaliação; pode ser feita em etapas.",
+    recovery: "Pode haver inchaço, sensibilidade e hematomas nos primeiros dias.",
+    boundary:
+      "Preenchimentos têm riscos, inclusive complicações vasculares. A avaliação define o que é indicado, e também pode concluir que nada deve ser feito.",
+    symbol: "contour",
+  },
+  {
+    slug: "harmonizacao-facial",
+    number: "02",
     label: "Harmonização facial",
     short: "O conjunto vem antes do detalhe.",
     intro:
@@ -58,7 +87,7 @@ export const procedures = [
   },
   {
     slug: "preenchimento-labial",
-    number: "02",
+    number: "03",
     label: "Preenchimento labial",
     short: "Contorno. Proporção. Expressão.",
     intro:
@@ -78,7 +107,7 @@ export const procedures = [
   },
   {
     slug: "bioestimuladores-de-colageno",
-    number: "03",
+    number: "04",
     label: "Bioestimuladores de colágeno",
     short: "Um olhar para a firmeza da pele.",
     intro:
@@ -95,8 +124,8 @@ export const procedures = [
   },
   {
     slug: "toxina-botulinica",
-    number: "04",
-    label: "Linhas de expressão",
+    number: "05",
+    label: "Toxina botulínica",
     short: "Entender o movimento antes de tratar.",
     intro:
       "Informações sobre a avaliação de linhas de expressão e sobre quando a toxina botulínica pode ser considerada.",
@@ -115,8 +144,8 @@ export const procedures = [
   },
   {
     slug: "microagulhamento",
-    number: "05",
-    label: "Textura da pele",
+    number: "06",
+    label: "Microagulhamento",
     short: "Cuidar da superfície. Com critério.",
     intro:
       "Uma avaliação para discutir textura e cuidados da pele, incluindo microagulhamento quando indicado.",

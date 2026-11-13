@@ -11,6 +11,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SCENE_STOPS } from "./choreography.mjs";
 import { Contact, Arrow } from "../components/UI.jsx";
 import { site } from "../site.config.mjs";
+import { resultCases } from "../lib.mjs";
 const Sculpture = lazy(() => import("./Sculpture.jsx"));
 gsap.registerPlugin(ScrollTrigger);
 
@@ -193,8 +194,8 @@ export default function Experience() {
   }, [chapter]);
   const goTo = (i) => {
     if (i > 2) {
-      document
-        .getElementById("mariana")
+      // The fibre continues into the before/after right below; without it, go to Mariana.
+      (document.getElementById("resultados") ?? document.getElementById("mariana"))
         ?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
       return;
     }
@@ -356,9 +357,15 @@ export default function Experience() {
             <br />
             Uma decisão de cada vez.
           </p>
-          <a className="text-link" href="#mariana">
-            Conheça a Mariana <Arrow />
-          </a>
+          {resultCases().length ? (
+            <a className="text-link" href="#resultados">
+              Ver o antes e o depois <Arrow />
+            </a>
+          ) : (
+            <a className="text-link" href="#mariana">
+              Conheça a Mariana <Arrow />
+            </a>
+          )}
         </div>
         <div className="stage-footer">
           <button

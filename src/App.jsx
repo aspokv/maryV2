@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Experience from "./experience/Experience.jsx";
+import Results from "./components/Results.jsx";
 import { Contact, Arrow, Mark, Portrait } from "./components/UI.jsx";
 import { site, procedures } from "./site.config.mjs";
-import { mapHref } from "./lib.mjs";
+import { mapHref, resultCases } from "./lib.mjs";
 import { applyConsent, getConsent, track } from "./tracking.mjs";
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,8 +27,10 @@ function Header() {
         </span>
       </a>
       <nav className="desktop-nav" aria-label="Principal">
+        <a href="/#resultados">Resultados</a>
         <a href="/#mariana">A Mariana</a>
         <a href="/#cuidados">Cuidados</a>
+        <a href="/#primeira-consulta">Primeira consulta</a>
         <a href="/#contato">Localização</a>
       </nav>
       <div className="header-actions">
@@ -53,8 +56,10 @@ function Header() {
         >
           {[
             ["A experiência", "experiencia"],
+            ["Resultados", "resultados"],
             ["A Mariana", "mariana"],
             ["Cuidados", "cuidados"],
+            ["Primeira consulta", "primeira-consulta"],
             ["Localização", "contato"],
           ].map(([text, id], i) => (
             <a key={id} href={`/#${id}`} onClick={() => setMenu(false)}>
@@ -72,7 +77,7 @@ function About() {
   return (
     <section className="about" id="mariana">
       <div className="about-topline">
-        <span>03 — A PESSOA POR TRÁS DO CUIDADO</span>
+        <span>04 — A PESSOA POR TRÁS DO CUIDADO</span>
         <span>ESCUTA. CRITÉRIO. PRESENÇA.</span>
       </div>
       <div className="about-grid">
@@ -112,18 +117,9 @@ function About() {
               intermediários.
             </small>
           </p>
-          <div className="about-detail reveal">
-            <span>01</span>
-            <p>Entender sua intenção.</p>
-          </div>
-          <div className="about-detail reveal">
-            <span>02</span>
-            <p>Conversar sobre possibilidades e limites.</p>
-          </div>
-          <div className="about-detail reveal">
-            <span>03</span>
-            <p>Decidir o próximo passo com clareza.</p>
-          </div>
+          <a className="about-next reveal" href="#primeira-consulta">
+            Como é a primeira consulta <Arrow />
+          </a>
           <Contact position="about" variant="line" className="reveal">
             Conversar com a Mariana
           </Contact>
@@ -132,29 +128,28 @@ function About() {
     </section>
   );
 }
+// The technical name first, then what it means in everyday words.
 const shortCare = [
+  ["Perfiloplastia", "Nariz, lábios, queixo e mandíbula em equilíbrio.", "perfiloplastia"],
   ["Harmonização facial", "O rosto como um conjunto.", "harmonizacao-facial"],
-  ["Lábios", "Forma, contorno e proporção.", "preenchimento-labial"],
-  [
-    "Qualidade da pele",
-    "Textura, firmeza e cuidado.",
-    "bioestimuladores-de-colageno",
-  ],
-  ["Linhas de expressão", "Um olhar para o movimento.", "toxina-botulinica"],
+  ["Preenchimento labial", "Contorno, definição e proporção.", "preenchimento-labial"],
+  ["Bioestimuladores de colágeno", "Firmeza e qualidade da pele.", "bioestimuladores-de-colageno"],
+  ["Toxina botulínica", "Linhas de expressão e movimento.", "toxina-botulinica"],
+  ["Microagulhamento", "Textura e viço da pele.", "microagulhamento"],
 ];
 function Care() {
   const [selected, setSelected] = useState(null);
   return (
     <section className="care" id="cuidados">
       <div className="care-heading">
-        <span className="eyebrow reveal">04 — POSSIBILIDADES</span>
+        <span className="eyebrow reveal">05 — O QUE ELA FAZ</span>
         <h2 className="reveal">
           O que você
           <br />
           quer <em>cuidar?</em>
         </h2>
         <p className="reveal">
-          Comece pelo que importa para você.
+          Rejuvenescimento e perfiloplastia, com técnicas autorais.
           <br />A indicação vem depois da avaliação.
         </p>
         <span className="care-art" aria-hidden="true">
@@ -173,7 +168,7 @@ function Care() {
                 aria-expanded={open}
                 aria-controls={`care-${slug}`}
               >
-                <span className="care-number">0{i + 1}</span>
+                <span className="care-number">{p.number}</span>
                 <span className="care-name">
                   {label}
                   <small>{short}</small>
@@ -203,10 +198,55 @@ function Care() {
             </div>
           );
         })}
-        <a href="/procedimentos/microagulhamento/" className="all-care">
-          Também quero entender os cuidados com a textura da pele{" "}
-          <Arrow diagonal />
-        </a>
+      </div>
+    </section>
+  );
+}
+const visitSteps = [
+  [
+    "Você manda uma mensagem",
+    "Pelo WhatsApp, direto com a Mariana. Ela combina o horário e informa o valor da avaliação antes de você confirmar.",
+  ],
+  [
+    "Uma conversa sem pressa",
+    "No consultório, em São Pelegrino, ela ouve o que você quer mudar e o que quer preservar, e conhece o seu histórico de saúde e de procedimentos.",
+  ],
+  [
+    "O rosto avaliado como um todo",
+    "Proporção, pele e movimento são olhados em conjunto, antes de qualquer detalhe.",
+  ],
+  [
+    "Um plano claro, ou nenhum procedimento",
+    "Você sai sabendo o que é indicado, as etapas, os cuidados, os riscos e os valores, e decide com calma. Às vezes, a melhor indicação é esperar.",
+  ],
+];
+function FirstVisit() {
+  return (
+    <section className="visit" id="primeira-consulta">
+      <div className="visit-heading">
+        <span className="eyebrow reveal">06 — SUA PRIMEIRA CONSULTA</span>
+        <h2 className="reveal">
+          Como é a
+          <br />
+          <em>primeira consulta.</em>
+        </h2>
+        <p className="reveal">Quatro passos, do primeiro contato ao plano. Quem conduz todos é a Mariana.</p>
+      </div>
+      <div className="visit-body">
+        <ol className="visit-steps">
+          {visitSteps.map(([title, text], i) => (
+            <li className="reveal" key={title}>
+              <span className="visit-number">0{i + 1}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <Contact position="evaluation" variant="line" className="reveal">
+          Agendar minha avaliação
+        </Contact>
       </div>
     </section>
   );
@@ -247,7 +287,7 @@ function Closing() {
   return (
     <section className="closing" id="contato">
       <div className="closing-top">
-        <span className="eyebrow">05 — SEU PRÓXIMO PASSO</span>
+        <span className="eyebrow">07 — SEU PRÓXIMO PASSO</span>
         <span className="closing-place">SÃO PELEGRINO · CAXIAS DO SUL</span>
       </div>
       <div className="closing-main">
@@ -306,15 +346,14 @@ function Footer({ onPrivacy }) {
         </a>
       </div>
       <p className="regulatory">
-        {site.name} · {site.profession} ·{" "}
-        {site.registration || "[CRBM-5: a confirmar]"}
+        {[site.name, site.profession, site.registration, site.qualification]
+          .filter(Boolean)
+          .join(" · ")}
         <br />
-        {site.legalName} ·{" "}
-        {site.companyRegistration || "[Registro PJ: a confirmar]"} ·{" "}
-        {site.qualification || "[Habilitação: a confirmar]"}
-        <br />
-        Horários: {site.hours || "[a confirmar]"}. Conceito privado em revisão.
-        A hélice ilustra a estrutura do colágeno, sem representação de
+        {site.street}, {site.suite} · {site.neighborhood} · {site.city}/
+        {site.region}
+        {site.hours ? ` · Atendimento: ${site.hours}` : ""}
+        <br />A hélice ilustra a estrutura do colágeno, sem representação de
         procedimento ou resultado.
       </p>
     </footer>
@@ -325,7 +364,10 @@ function StickyContact() {
   useEffect(() => {
     const update = () => {
       const intro = document.querySelector(".experience");
-      setVisible(window.scrollY > (intro ? intro.offsetHeight - 160 : 180));
+      // Out of the way while the fibre crosses the before/after: that moment gets the whole screen.
+      const r = document.querySelector(".results-track")?.getBoundingClientRect();
+      const inResults = r && r.top < innerHeight * 0.6 && r.bottom > innerHeight * 0.4;
+      setVisible(!inResults && window.scrollY > (intro ? intro.offsetHeight - 160 : 180));
     };
     window.addEventListener("scroll", update, { passive: true });
     update();
@@ -392,15 +434,14 @@ function Privacy() {
         <br />
         <em>e escolhas.</em>
       </h1>
-      <p>
-        Versão de 18 de outubro de 2026. Texto em revisão pela responsável antes
-        da divulgação pública.
-      </p>
+      <p>Versão de 13 de novembro de 2026.</p>
       <h2>Responsável pelo site</h2>
       <p>
-        {site.legalName}. {site.street}, {site.suite}, {site.city},{" "}
-        {site.region}. Contato para exercer seus direitos:{" "}
-        {site.privacyContact || "[CONTATO DE PRIVACIDADE A CONFIRMAR]"}.
+        {site.legalName}, {site.profession.toLowerCase()} ({site.registration}),
+        que atende como pessoa física. {site.street}, {site.suite},{" "}
+        {site.neighborhood}, {site.city}/{site.region}. Ela também é a
+        encarregada pelos dados. Contato para exercer seus direitos:{" "}
+        {site.privacyContact}.
       </p>
       <h2>Contato e dados de saúde</h2>
       <p>
@@ -420,10 +461,21 @@ function Privacy() {
       </p>
       <h2>Finalidade, base e retenção</h2>
       <p>
-        Mensagens voluntárias são usadas para responder ao contato e discutir o
-        agendamento. A clínica deve validar as bases legais de cada etapa,
-        incluindo dados sensíveis, prazos de retenção e operadores. Essas
-        informações serão completadas antes da divulgação pública.
+        As mensagens que você envia são usadas para responder ao seu contato e
+        combinar a avaliação, como procedimento preliminar a seu pedido (LGPD,
+        art. 7º, V). Se você se tornar paciente, os dados do atendimento seguem
+        as regras do prontuário e são guardados pelo prazo legal de 20 anos a
+        partir do último registro. A análise de navegação, quando ativada,
+        depende do seu consentimento (art. 7º, I) e pode ser desligada a
+        qualquer momento nas preferências de cookies.
+      </p>
+      <h2>Fotos de pacientes</h2>
+      <p>
+        As fotos de antes e depois mostradas aqui são de pacientes reais da
+        Mariana, sem filtro e sem retoque, e só aparecem com a autorização
+        escrita de cada paciente, que pode ser revogada a qualquer momento.
+        Revogada a autorização, a foto sai do site. Os arquivos publicados não
+        guardam localização nem dados do aparelho.
       </p>
       <h2>Seus direitos</h2>
       <p>
@@ -505,6 +557,7 @@ export default function App({ initialPath }) {
   const p = procedures.find((x) => path.includes(`/procedimentos/${x.slug}`));
   const landing =
     !p && !path.startsWith("/privacidade") && !path.startsWith("/links");
+  const cases = resultCases();
   useEffect(() => {
     const c = getConsent();
     if (c) applyConsent(c, false);
@@ -539,8 +592,10 @@ export default function App({ initialPath }) {
         {landing ? (
           <main>
             <Experience />
+            {cases.length > 0 && <Results cases={cases} />}
             <About />
             <Care />
+            <FirstVisit />
             <Questions />
             <Closing />
           </main>

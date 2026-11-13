@@ -1,18 +1,18 @@
 {
-  "version": 3,
-  "routes": 9,
-  "static_html_bytes": 15839,
+  "version": 4,
+  "routes": 10,
+  "static_html_bytes": 23820,
   "javascript": [
     {
-      "name": "index-Bl34vTk9.js",
-      "bytes": 493790,
-      "gzip_bytes": 165982,
+      "name": "index-CXT_Gizp.js",
+      "bytes": 504116,
+      "gzip_bytes": 169839,
       "lazy_scene": false
     },
     {
-      "name": "Sculpture-0ZE_fiu7.js",
+      "name": "Sculpture-DVNBeDTJ.js",
       "bytes": 948767,
-      "gzip_bytes": 261131,
+      "gzip_bytes": 261790,
       "lazy_scene": true
     }
   ],

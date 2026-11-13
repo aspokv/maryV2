@@ -1,0 +1,63 @@
+# CLAUDE.md — site da Dra. Mariana Strey (maryV2)
+
+Landing page pública da Dra. Mariana Strey, biomédica esteta (CRBM-5 6569), em Caxias do Sul. O painel de gestão da clínica é outro projeto ([aspokv/mary-gestao](https://github.com/aspokv/mary-gestao)); não mexer nele daqui.
+
+**Este repositório é público.** Nada de segredo, token, `.env`, planilha, dado de paciente ou foto original aqui. Fotos de antes e depois entram só como os arquivos já preparados (ver "Antes e depois").
+
+## Autorização (Nicolas, 2026-11-13)
+
+A Mariana deu ao Nicolas autorização total para decidir e aprovar o site em nome dela. Todas as pacientes dela assinaram consentimento de divulgação de imagem. As aprovações (`portraitApproved`, `clinicalCopyApproved` etc. em `src/site.config.mjs`) estão registradas como dele, em nome dela.
+
+Isso não autoriza inventar dados: horários, habilitação, preços e CNPJ só como ela informar. Ela atende como pessoa física, **sem empresa nem CNPJ**: nunca escrever razão social.
+
+## Regras
+
+- **Celular primeiro.** Hoje o site carrega muito bem no celular; nenhuma mudança pode piorar isso.
+  - Conferir em 390×844 e 375×667, sem rolagem lateral.
+  - Imagens em AVIF/WebP com `srcset`.
+  - Nada de bibliotecas novas pesadas.
+  - O 3D continua carregando só quando o aparelho aguenta (`Experience.jsx`).
+- **Paleta e tipografia** são as do feed dela (README, "Paleta"). A tripla hélice do colágeno é a marca do site e fica.
+- **Ela atende sozinha:** nunca escrever "equipe".
+- **Antes e depois** (Código de Ética da Biomedicina, Res. CFBM 330/2020):
+  - fotos reais, sem filtro e sem retoque;
+  - sempre com a legenda de `resultCaption()`: paciente real, TCLE, sem garantia de resultado, nome, CRBM e habilitação.
+  - Nada de transição que funda as duas fotos ou crie imagem intermediária: a fibra é uma cortina entre duas fotos inteiras.
+- **Publicação no Google:** `canRelease()` mantém `noindex` até existirem horários e habilitação. Não contornar.
+- **Procedimentos:** nome técnico primeiro, explicação simples depois. Sem marca de produto ou medicamento.
+
+## Antes e depois
+
+1. Guarde os originais fora do repositório (ou em `fotos-originais/`, que o git ignora).
+2. `npm i --no-save sharp`
+3. `node scripts/preparar-fotos.mjs <antes.jpg> <depois.jpg> <slug>`: mesmo corte 4:5, sem nenhum metadado, AVIF/WebP em 600 e 1200 px.
+4. Acrescente o caso em `results` no `src/site.config.mjs`: `slug`, `procedure`, `interval` e `alt` das duas fotos.
+5. `npm run check` (confere os 8 arquivos e a habilitação) e `npm run build`.
+
+Sem fotos, a versão de revisão mostra o espaço reservado. Publicada, a seção some até haver um caso.
+
+## Comandos
+
+Node 22+.
+
+- `npm ci`
+- `npm run check`: testes de WhatsApp, dados não inventados, gate de publicação, legenda do CFBM, fibra e hélice.
+- `npm run build`: Vite + 10 rotas pré-renderizadas.
+- `npx vite preview --port 4173`: serve o `dist/`.
+
+## Deploy
+
+- **Coolify** em https://panel.aiexec.com.br, projeto Mariana Strey.
+  - App **mary-v2** (`eckdqikjnbm9sgr5cev4wl57`): Dockerfile (build com `npm run check`) servido por nginx na porta **80**.
+  - Fonte: GitHub público, branch `main`.
+  - Publicar: push na `main`. O webhook do GitHub chama o Coolify; se não publicar, use Deploy no Coolify ou `POST /api/v1/deploy` com `{"uuid":"eckdqikjnbm9sgr5cev4wl57"}`.
+- **Domínio:** https://dramarianastrey.com.br. O `www` redireciona para ele.
+  - DNS no Cloudflare: A `@` e A `www` para 187.127.48.117, **DNS only** (sem nuvem laranja), para o Let's Encrypt do Coolify funcionar.
+  - O `painel.` é a gestão e não deve ser alterado.
+- **Endereço de teste:** https://eckdqikjnbm9sgr5cev4wl57.187.127.48.117.sslip.io
+- O site antigo (V1) era o app **MAARI** (`wqkfoiqo6tvpspxc4otpfadt`, repo privado Mariana-Site). Foi parado em 2026-11-13 e não foi apagado.
+
+## Pendente
+
+- **Horários de atendimento** e **habilitação** (como consta no CRBM). Com os dois, o site passa a ser indexado pelo Google.
+- **Fotos de antes e depois**, que a Mariana vai mandar.
