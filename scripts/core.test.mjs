@@ -24,27 +24,17 @@ test("atribuição descarta PII e parâmetros livres", () => {
     { source: "site", medium: "organic", content: "" },
   );
 });
-test("versão incompleta não permite indexação de produção", () => {
-  assert.equal(canRelease({ ...site, hours: "", qualification: "" }), false);
-  assert.equal(canRelease({ ...site, hours: "validado", qualification: "" }), false, "sem habilitação não publica");
-  assert.equal(
-    canRelease({
-      ...site,
-      registration: "validado",
-      // Ela atende como pessoa física: sem CNPJ, o site publica assim mesmo.
-      companyRegistration: "",
-      qualification: "validado",
-      hours: "validado",
-      domain: "https://example.org",
-      privacyContact: "validado",
-      portraitApproved: true,
-      businessDataApproved: true,
-      clinicalCopyApproved: true,
-      legalScopeApproved: true,
-      privacyApproved: true,
-    }),
-    true,
-  );
+test("Google só com registro, forma de agendar, domínio, contato de privacidade e aprovações", () => {
+  assert.equal(canRelease({ ...site, hours: "" }), false, "sem a forma de agendar não publica");
+  assert.equal(canRelease({ ...site, registration: "" }), false, "sem CRBM não publica");
+  assert.equal(canRelease({ ...site, domain: "" }), false);
+  assert.equal(canRelease({ ...site, privacyContact: "" }), false);
+  for (const k of ["portraitApproved", "businessDataApproved", "clinicalCopyApproved", "legalScopeApproved", "privacyApproved"])
+    assert.equal(canRelease({ ...site, [k]: false }), false, `sem ${k} não publica`);
+  // Pessoa física, sem CNPJ; habilitação não exibida e sem horário fixo, por decisão do Nicolas (2026-11-13).
+  assert.equal(site.companyRegistration, "");
+  assert.equal(site.qualification, "");
+  assert.equal(canRelease(site), true);
 });
 test("schema não inventa estrelas ou condição de médico", () => {
   const data = JSON.stringify(schema("https://example.org"));
@@ -87,15 +77,15 @@ test("cada caso de antes e depois tem nome, descrições e os 4 arquivos prepara
     assert.ok(!slugs.has(r.slug), `${r.slug} repetido`);
     slugs.add(r.slug);
     assert.ok(r.label && r.alt?.before && r.alt?.after, `${r.slug}: dados incompletos`);
-    // Procedimento e intervalo só como a Mariana informar: podem ficar vazios, nunca chutados.
+    // Procedimento só como a Mariana informar (pode ficar vazio, nunca chutado); tempo depois do tratamento não vai.
     assert.equal(typeof r.procedure, "string");
-    assert.equal(typeof r.interval, "string");
+    assert.ok(!r.interval, "tempo depois do tratamento não é mostrado (decisão do Nicolas)");
     for (const lado of ["antes", "depois"])
       for (const ext of ["avif", "webp"])
         assert.ok(existsSync(`public/images/resultados/${r.slug}-${lado}.${ext}`), `${r.slug}-${lado}.${ext}`);
   }
 });
-test("legenda sem habilitação ainda traz nome, profissão e CRBM (a habilitação entra quando ela informar)", () => {
+test("legenda sem habilitação traz nome, profissão e CRBM", () => {
   const legenda = resultCaption({ ...site, qualification: "" });
   assert.ok(legenda.includes(`${site.name} · ${site.profession} · ${site.registration}.`));
   assert.ok(!legenda.includes(" ·  ·") && !legenda.includes("undefined"));

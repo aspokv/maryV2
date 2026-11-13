@@ -33,11 +33,11 @@ export function whatsappHref({
 export function mapHref() {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${site.name}, ${site.street}, ${site.suite}, ${site.neighborhood}, ${site.city}, ${site.region}`)}`;
 }
-// She works as a natural person: there is no company or CNPJ to wait for.
+// She works as a natural person: there is no company or CNPJ to wait for. Nicolas decided (2026-11-13)
+// that the qualification is not shown and that there are no fixed hours (appointments by WhatsApp).
 export function canRelease(config = site) {
   return Boolean(
     config.registration &&
-      config.qualification &&
       config.hours &&
       config.domain &&
       config.privacyContact &&

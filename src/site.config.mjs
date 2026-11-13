@@ -6,7 +6,7 @@ export const site = {
   // Public Instagram bio (@dramarianastrey), read 2026-10-18.
   registration: "CRBM-5 6569",
   companyRegistration: "",
-  // Her registered qualification(s) exactly as on the CRBM record. Required before release and on every before/after.
+  // Not shown: Nicolas decided it is not needed (2026-11-13). If ever filled, it joins the footer and the before/after caption.
   qualification: "",
   whatsapp: "5554999507227",
   phoneDisplay: "(54) 99950-7227",
@@ -18,8 +18,8 @@ export const site = {
   city: "Caxias do Sul",
   region: "RS",
   postcode: "95010-040",
-  // Opening hours as she gives them. Required before release.
-  hours: "",
+  // She has no fixed opening hours (Nicolas, 2026-11-13): every visit is booked over WhatsApp.
+  hours: "com hora marcada pelo WhatsApp",
   domain: "https://dramarianastrey.com.br",
   portrait: "/images/mariana-800.webp",
   // Approved by Nicolas on Mariana's behalf (she gave him full authorization), 2026-11-13.
@@ -37,14 +37,13 @@ export const site = {
   // Photos: real, no filter or retouch, same framing. Prepare them with scripts/preparar-fotos.mjs,
   // which strips all metadata and writes /images/resultados/<slug>-antes|depois.avif|webp (2:3).
   // Originals never enter this repository (it is public).
-  // `label` names the case; `procedure` and `interval` only as Mariana tells them (never guessed).
+  // `label` names the case. No time since treatment (Nicolas, 2026-11-13); `procedure` only if Mariana tells it.
   results: [
     {
       // Sent by Mariana on 2026-11-13 (montage, front view).
       slug: "caso-1",
       label: "Caso 1 · frente",
       procedure: "",
-      interval: "",
       alt: {
         before: "Rosto de frente de uma paciente da Mariana, antes do tratamento.",
         after: "O mesmo rosto de frente, depois do tratamento.",
@@ -55,7 +54,6 @@ export const site = {
       slug: "caso-2",
       label: "Caso 2 · lateral",
       procedure: "",
-      interval: "",
       alt: {
         before: "Rosto de outra paciente da Mariana, visto de lado, antes do tratamento.",
         after: "O mesmo rosto visto de lado, depois do tratamento.",

@@ -83,7 +83,7 @@ Domínio: https://dramarianastrey.com.br. O CRBM-5 6569 veio da bio pública do 
 
 Conteúdo, retrato, escopo e privacidade foram aprovados pelo Nicolas em nome da Mariana (autorização total, 2026-11-13). Ela atende como pessoa física, sem CNPJ.
 
-Faltam **horários** e **habilitação**. Enquanto isso, `canRelease()` mantém `noindex`. Não preencher por inferência.
+Por decisão do Nicolas: sem habilitação, sem horário fixo (hora marcada pelo WhatsApp) e sem o tempo entre o antes e o depois. Com isso, `canRelease()` libera a indexação no Google desde 2026-11-13.
 
 Regras, deploy e o passo a passo das fotos de antes e depois: [CLAUDE.md](CLAUDE.md).
 

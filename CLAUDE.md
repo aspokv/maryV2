@@ -8,7 +8,13 @@ Landing page pública da Dra. Mariana Strey, biomédica esteta (CRBM-5 6569), em
 
 A Mariana deu ao Nicolas autorização total para decidir e aprovar o site em nome dela. Todas as pacientes dela assinaram consentimento de divulgação de imagem. As aprovações (`portraitApproved`, `clinicalCopyApproved` etc. em `src/site.config.mjs`) estão registradas como dele, em nome dela.
 
-Isso não autoriza inventar dados: horários, habilitação, preços e CNPJ só como ela informar. Ela atende como pessoa física, **sem empresa nem CNPJ**: nunca escrever razão social.
+Isso não autoriza inventar dados: preços, procedimentos de um caso e qualquer dado novo só como ela informar. Ela atende como pessoa física, **sem empresa nem CNPJ**: nunca escrever razão social.
+
+Decisões do Nicolas (2026-11-13), que valem até ele mudar:
+
+- **sem habilitação** no site e na legenda;
+- **sem horário fixo**: atendimento com hora marcada pelo WhatsApp;
+- **sem o tempo** entre o antes e o depois nos casos.
 
 ## Regras
 
@@ -21,9 +27,9 @@ Isso não autoriza inventar dados: horários, habilitação, preços e CNPJ só 
 - **Ela atende sozinha:** nunca escrever "equipe".
 - **Antes e depois** (Código de Ética da Biomedicina, Res. CFBM 330/2020):
   - fotos reais, sem filtro e sem retoque;
-  - sempre com a legenda de `resultCaption()`: paciente real, TCLE, sem garantia de resultado, nome, CRBM e habilitação.
+  - sempre com a legenda de `resultCaption()`: paciente real, TCLE, sem garantia de resultado, nome, profissão e CRBM. A habilitação só entra se `qualification` for preenchida.
   - Nada de transição que funda as duas fotos ou crie imagem intermediária: a fibra é uma cortina entre duas fotos inteiras.
-- **Publicação no Google:** `canRelease()` mantém `noindex` até existirem horários e habilitação. Não contornar.
+- **Publicação no Google:** `canRelease()` libera a indexação (sitemap, `index,follow`, dados estruturados) com CRBM, forma de agendar (`hours`), domínio, contato de privacidade e as aprovações. Liberado desde 2026-11-13.
 - **Procedimentos:** nome técnico primeiro, explicação simples depois. Sem marca de produto ou medicamento.
 
 ## Antes e depois
@@ -34,10 +40,10 @@ Isso não autoriza inventar dados: horários, habilitação, preços e CNPJ só 
    - fotos separadas: `node scripts/preparar-fotos.mjs <antes.jpg> <depois.jpg> <slug> [--topo=0.3]`;
    - montagem lado a lado (como ela manda pelo WhatsApp): `node scripts/preparar-fotos.mjs --montagem <imagem.jpg> <slug> [--topo=0.3]`.
    - `--topo` desce o recorte para o rosto ficar inteiro. Confira numa folha de contato antes de publicar.
-4. Acrescente o caso em `results` no `src/site.config.mjs`: `slug`, `label` (nome do caso) e `alt` das duas fotos. `procedure` e `interval` só como ela informar.
+4. Acrescente o caso em `results` no `src/site.config.mjs`: `slug`, `label` (nome do caso) e `alt` das duas fotos. `procedure` só se ela informar; tempo depois do tratamento não vai.
 5. `npm run check` (confere os 4 arquivos de cada caso) e `npm run build`.
 
-Sem fotos, a versão de revisão mostra o espaço reservado. Publicada, a seção some até haver um caso.
+Para trocar as fotos de um caso por versões melhores, rode o script com o mesmo `slug`: ele sobrescreve os 4 arquivos. Sem nenhum caso, a seção some do site publicado.
 
 ## Comandos
 
@@ -63,6 +69,4 @@ Node 22+.
 
 ## Pendente
 
-- **Horários de atendimento** e **habilitação** (como consta no CRBM). Com os dois, o site passa a ser indexado pelo Google.
-- **A habilitação também vai na legenda do antes e depois** (exigência do CFBM). Ela foi publicada sem habilitação a pedido do Nicolas (2026-11-13): preencher `qualification` assim que ela informar.
-- **Casos 1 e 2** (fotos de 2026-11-13, montagens de WhatsApp, metades de 509 e 637 px): falta o procedimento e o intervalo de cada um. Originais com mais resolução deixariam as fotos mais nítidas.
+- **Casos 1 e 2** (fotos de 2026-11-13, montagens de WhatsApp, metades de 509 e 637 px). O Nicolas pediu à Mariana as fotos separadas, em qualidade melhor. Quando chegarem, refazer `caso-1` e `caso-2` no modo de fotos separadas, com o mesmo enquadramento (rosto inteiro, da testa ao queixo).
