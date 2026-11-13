@@ -27,8 +27,9 @@ Decisões do Nicolas (2026-11-13), que valem até ele mudar:
 - **Ela atende sozinha:** nunca escrever "equipe".
 - **Antes e depois** (Código de Ética da Biomedicina, Res. CFBM 330/2020):
   - fotos reais, sem filtro e sem retoque;
-  - sempre com a legenda de `resultCaption()`: paciente real, TCLE, sem garantia de resultado, nome, profissão e CRBM. A habilitação só entra se `qualification` for preenchida.
+  - **sem legenda** embaixo das fotos: o Nicolas mandou tirar (2026-11-13), ciente de que o CFBM pede o texto (paciente real, TCLE, sem garantia, CRBM). Não recolocar sem pedido dele.
   - Nada de transição que funda as duas fotos ou crie imagem intermediária: a fibra é uma cortina entre duas fotos inteiras.
+  - Vários casos passam em sequência na mesma rolagem (`sequenceOf`): a fibra atravessa um, recolhe, a foto troca e atravessa o próximo. Os botões levam ao começo de cada caso.
 - **Publicação no Google:** `canRelease()` libera a indexação (sitemap, `index,follow`, dados estruturados) com CRBM, forma de agendar (`hours`), domínio, contato de privacidade e as aprovações. Liberado desde 2026-11-13.
 - **Procedimentos:** nome técnico primeiro, explicação simples depois. Sem marca de produto ou medicamento.
 
@@ -50,7 +51,7 @@ Para trocar as fotos de um caso por versões melhores, rode o script com o mesmo
 Node 22+.
 
 - `npm ci`
-- `npm run check`: testes de WhatsApp, dados não inventados, gate de publicação, legenda do CFBM, fibra e hélice.
+- `npm run check`: testes de WhatsApp, dados não inventados, gate de publicação, casos de antes e depois, fibra, sequência e hélice.
 - `npm run build`: Vite + 10 rotas pré-renderizadas.
 - `npx vite preview --port 4173`: serve o `dist/`.
 

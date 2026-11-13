@@ -1974,11 +1974,12 @@ svg {
   background: var(--paper);
   padding: 0 var(--gutter);
 }
-/* Tall track + sticky stage: the scroll stays native, the photo and its title stay put. */
+/* Tall track + sticky stage: the scroll stays native, the photo and its title stay put.
+   One stretch of scroll per case, so each gets its own pass of the fibre. */
 .results-track {
   position: relative;
-  height: 240vh;
-  height: 240svh;
+  height: calc(100vh + var(--cases, 1) * 140vh);
+  height: calc(100svh + var(--cases, 1) * 140svh);
 }
 .results-track.is-static {
   height: auto;
@@ -2040,6 +2041,16 @@ svg {
 .ba-layer {
   position: absolute;
   inset: 0;
+}
+/* Cases stacked in the same frame; the next one fades in while the fibre is retracted. */
+.ba-case {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.ba-case.is-active {
+  opacity: 1;
 }
 .ba-layer picture,
 .ba-layer img {
@@ -2350,7 +2361,7 @@ svg {
     margin-top: 8px;
   }
   .results-track {
-    height: 230svh;
+    height: calc(100svh + var(--cases, 1) * 130svh);
   }
   .results-track.is-static {
     padding: 28px 0 60px;
@@ -2450,7 +2461,8 @@ svg {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ba-tag {
+  .ba-tag,
+  .ba-case {
     transition: none;
   }
 }

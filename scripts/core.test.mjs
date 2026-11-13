@@ -53,12 +53,7 @@ test("não inventa empresa: ela atende como pessoa física, sem razão social ne
 });
 
 import { existsSync } from "node:fs";
-import { resultCaption, resultCases } from "../src/lib.mjs";
-test("antes e depois: legenda exigida pelo CFBM (paciente real, TCLE, sem garantia, CRBM, habilitação)", () => {
-  const legenda = resultCaption({ ...site, qualification: "Habilitação X" });
-  for (const trecho of ["Paciente real", "sem filtro", "TCLE", "não é garantido", site.registration, "Habilitação X"])
-    assert.ok(legenda.includes(trecho), `falta "${trecho}"`);
-});
+import { resultCases } from "../src/lib.mjs";
 test("antes e depois: espaço reservado só na versão de revisão; publicado sem fotos, a seção some", () => {
   const pronto = {
     ...site,
@@ -85,13 +80,8 @@ test("cada caso de antes e depois tem nome, descrições e os 4 arquivos prepara
         assert.ok(existsSync(`public/images/resultados/${r.slug}-${lado}.${ext}`), `${r.slug}-${lado}.${ext}`);
   }
 });
-test("legenda sem habilitação traz nome, profissão e CRBM", () => {
-  const legenda = resultCaption({ ...site, qualification: "" });
-  assert.ok(legenda.includes(`${site.name} · ${site.profession} · ${site.registration}.`));
-  assert.ok(!legenda.includes(" ·  ·") && !legenda.includes("undefined"));
-});
 
-import { afterClip, fiberPath, fiberPoints, fiberX, sweepOf } from "../src/experience/fiber.mjs";
+import { afterClip, caseStart, fiberPath, fiberPoints, fiberX, sequenceOf } from "../src/experience/fiber.mjs";
 test("fibra do antes e depois: começa na borda esquerda, atravessa e termina na direita", () => {
   const xs = (p) => fiberPoints(p, 0.3).map(([x]) => x);
   // Nas pontas, o que sobra do outro lado fica debaixo do corpo da fibra (12 px de largura).
@@ -110,13 +100,34 @@ test("fibra do antes e depois: começa na borda esquerda, atravessa e termina na
     assert.ok(afterClip(pts).startsWith("polygon("));
   }
 });
-test("rolagem: primeiro a fibra desce, depois atravessa, no fim segura o depois", () => {
-  assert.deepEqual(sweepOf(0), { draw: 0, p: 0 });
-  assert.equal(sweepOf(0.14).draw, 1);
-  assert.equal(sweepOf(0.14).p, 0);
-  assert.equal(sweepOf(0.86).p, 1);
-  assert.deepEqual(sweepOf(1), { draw: 1, p: 1 });
-  assert.ok(sweepOf(0.5).p > 0.4 && sweepOf(0.5).p < 0.6);
+test("rolagem com um caso: a fibra desce, atravessa e segura o depois", () => {
+  assert.deepEqual(sequenceOf(0, 1), { index: 0, draw: 0, p: 0 });
+  assert.equal(sequenceOf(0.1, 1).draw, 1);
+  assert.equal(sequenceOf(0.1, 1).p, 0);
+  assert.equal(sequenceOf(0.78, 1).p, 1);
+  assert.deepEqual(sequenceOf(1, 1), { index: 0, draw: 1, p: 1 });
+});
+test("rolagem com vários casos: cada um passa inteiro, em sequência, sem precisar voltar", () => {
+  for (const n of [2, 3]) {
+    let antes = [-1, -1];
+    for (let i = 0; i <= 2000; i++) {
+      const { index, draw, p } = sequenceOf(i / 2000, n);
+      assert.ok(index >= 0 && index < n && draw >= 0 && draw <= 1 && p >= 0 && p <= 1);
+      // Nunca volta: ou segue no mesmo caso com a fibra mais adiante, ou passa ao próximo.
+      assert.ok(index > antes[0] || (index === antes[0] && p >= antes[1]), `voltou em ${i / 2000}`);
+      antes = [index, p];
+    }
+    for (let k = 0; k < n; k++) {
+      // Cada caso começa no antes, com a fibra recolhida, e chega ao depois inteiro.
+      assert.deepEqual(sequenceOf(k / n, n), { index: k, draw: 0, p: 0 });
+      assert.equal(sequenceOf((k + 0.85) / n, n).p, 1);
+      assert.equal(sequenceOf(caseStart(k, n), n).index, k);
+      assert.equal(sequenceOf(caseStart(k, n), n).draw, 1);
+    }
+    // Antes de trocar de caso a fibra recolhe; no último ela fica como borda da moldura.
+    assert.ok(sequenceOf(0.98 / n, n).draw < 0.3);
+    assert.deepEqual(sequenceOf(1, n), { index: n - 1, draw: 1, p: 1 });
+  }
 });
 
 import { scenePose } from "../src/experience/choreography.mjs";

@@ -50,10 +50,19 @@ export function afterClip(pts) {
 }
 
 /**
- * Scroll choreography: the first stretch only draws the fibre down the left edge (it "arrives"
- * from the helix above), the middle sweeps it across, the end holds the full "after".
+ * Scroll choreography for n cases in a row, one stretch of the scroll each. Within a case the fibre
+ * first draws down the left edge (it "arrives" from the helix above), then sweeps across and holds the
+ * full "after"; before the next case it retracts up the right edge, so every case gets its own pass
+ * without scrolling back. The last case keeps the fibre resting as the frame's right edge.
  */
-export function sweepOf(scroll) {
-  const s = clamp(scroll);
-  return { draw: clamp(s / 0.14), p: clamp((s - 0.14) / 0.72) };
+export function sequenceOf(scroll, n = 1) {
+  const s = clamp(scroll) * n;
+  const index = Math.min(n - 1, Math.floor(s));
+  const local = s - index;
+  const last = index === n - 1;
+  const draw = local < 0.1 ? local / 0.1 : !last && local > 0.9 ? (1 - local) / 0.1 : 1;
+  return { index, draw: clamp(draw), p: clamp((local - 0.1) / 0.68) };
 }
+
+/** Scroll position (0–1 of the track) where case i starts sweeping, for the case buttons. */
+export const caseStart = (i, n) => (i + 0.1) / n;
