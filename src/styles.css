@@ -2030,7 +2030,8 @@ svg {
   grid-area: frame;
   position: relative;
   height: min(calc(100svh - 160px), 780px);
-  aspect-ratio: 4 / 5;
+  /* Same 2:3 as the prepared photos (scripts/preparar-fotos.mjs). */
+  aspect-ratio: 2 / 3;
   overflow: hidden;
   background: #e2d5c6;
   isolation: isolate;
@@ -2359,7 +2360,12 @@ svg {
     row-gap: 12px;
   }
   .ba-frame {
-    height: min(calc(100svh - 370px), calc((100vw - 48px) * 1.25));
+    height: min(calc(100svh - 380px), calc((100vw - 48px) * 1.5));
+  }
+  /* With several cases the buttons already name each one; the hint lives in the slider's label. */
+  .has-cases .ba-procedure,
+  .ba-range > span {
+    display: none;
   }
   .ba-aside {
     gap: 8px;
@@ -2427,6 +2433,20 @@ svg {
   .visit-body > .contact {
     margin-left: 48px;
     font-size: 11px;
+  }
+}
+/* Short phones (iPhone SE): the title stays for screen readers, the photo gets the room. */
+@media (max-width: 700px) and (max-height: 720px) {
+  .results-intro h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ba-frame {
+    height: min(calc(100svh - 320px), calc((100vw - 48px) * 1.5));
   }
 }
 @media (prefers-reduced-motion: reduce) {

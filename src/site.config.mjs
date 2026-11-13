@@ -35,11 +35,33 @@ export const site = {
   reviews: [],
   // Before/after cases. Every patient has signed consent for publication (Nicolas, 2026-11-13).
   // Photos: real, no filter or retouch, same framing. Prepare them with scripts/preparar-fotos.mjs,
-  // which strips all metadata and writes /images/resultados/<slug>-antes|depois-600|1200.avif|webp.
+  // which strips all metadata and writes /images/resultados/<slug>-antes|depois.avif|webp (2:3).
   // Originals never enter this repository (it is public).
-  // { slug: "perfil-1", procedure: "Perfiloplastia", interval: "30 dias depois",
-  //   alt: { before: "Perfil da paciente antes…", after: "O mesmo perfil 30 dias depois…" } }
-  results: [],
+  // `label` names the case; `procedure` and `interval` only as Mariana tells them (never guessed).
+  results: [
+    {
+      // Sent by Mariana on 2026-11-13 (montage, front view).
+      slug: "caso-1",
+      label: "Caso 1 · frente",
+      procedure: "",
+      interval: "",
+      alt: {
+        before: "Rosto de frente de uma paciente da Mariana, antes do tratamento.",
+        after: "O mesmo rosto de frente, depois do tratamento.",
+      },
+    },
+    {
+      // Sent by Mariana on 2026-11-13 (montage, three-quarter view).
+      slug: "caso-2",
+      label: "Caso 2 · lateral",
+      procedure: "",
+      interval: "",
+      alt: {
+        before: "Rosto de outra paciente da Mariana, visto de lado, antes do tratamento.",
+        after: "O mesmo rosto visto de lado, depois do tratamento.",
+      },
+    },
+  ],
   credentials: [],
   analytics: {
     ga4: "",

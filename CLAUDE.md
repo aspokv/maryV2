@@ -30,9 +30,12 @@ Isso não autoriza inventar dados: horários, habilitação, preços e CNPJ só 
 
 1. Guarde os originais fora do repositório (ou em `fotos-originais/`, que o git ignora).
 2. `npm i --no-save sharp`
-3. `node scripts/preparar-fotos.mjs <antes.jpg> <depois.jpg> <slug>`: mesmo corte 4:5, sem nenhum metadado, AVIF/WebP em 600 e 1200 px.
-4. Acrescente o caso em `results` no `src/site.config.mjs`: `slug`, `procedure`, `interval` e `alt` das duas fotos.
-5. `npm run check` (confere os 8 arquivos e a habilitação) e `npm run build`.
+3. Prepare as fotos. O script faz o mesmo recorte 2:3 nas duas, tira todos os metadados e gera AVIF/WebP de até 1200 px (nunca aumenta):
+   - fotos separadas: `node scripts/preparar-fotos.mjs <antes.jpg> <depois.jpg> <slug> [--topo=0.3]`;
+   - montagem lado a lado (como ela manda pelo WhatsApp): `node scripts/preparar-fotos.mjs --montagem <imagem.jpg> <slug> [--topo=0.3]`.
+   - `--topo` desce o recorte para o rosto ficar inteiro. Confira numa folha de contato antes de publicar.
+4. Acrescente o caso em `results` no `src/site.config.mjs`: `slug`, `label` (nome do caso) e `alt` das duas fotos. `procedure` e `interval` só como ela informar.
+5. `npm run check` (confere os 4 arquivos de cada caso) e `npm run build`.
 
 Sem fotos, a versão de revisão mostra o espaço reservado. Publicada, a seção some até haver um caso.
 
@@ -61,4 +64,5 @@ Node 22+.
 ## Pendente
 
 - **Horários de atendimento** e **habilitação** (como consta no CRBM). Com os dois, o site passa a ser indexado pelo Google.
-- **Fotos de antes e depois**, que a Mariana vai mandar.
+- **A habilitação também vai na legenda do antes e depois** (exigência do CFBM). Ela foi publicada sem habilitação a pedido do Nicolas (2026-11-13): preencher `qualification` assim que ela informar.
+- **Casos 1 e 2** (fotos de 2026-11-13, montagens de WhatsApp, metades de 509 e 637 px): falta o procedimento e o intervalo de cada um. Originais com mais resolução deixariam as fotos mais nítidas.

@@ -5,7 +5,6 @@ import { resultCaption } from "../lib.mjs";
 import { afterClip, fiberPath, fiberPoints, sweepOf } from "../experience/fiber.mjs";
 gsap.registerPlugin(ScrollTrigger);
 
-const SIZES = "(max-width: 700px) 86vw, 62vh";
 const LAYERS = ["shadow", "body", "mid", "light", "spec"];
 // Server-rendered state (also what visitors without JavaScript see): halfway, fibre drawn.
 const START = fiberPoints(0.5, 0.48);
@@ -18,20 +17,12 @@ function Photo({ c, side }) {
         <span>{side === "before" ? "antes" : "depois"}</span>
       </div>
     );
+  // One size per photo (2:3, at most 1200 px wide and never enlarged): the frame is about 300–500 px wide.
   const base = `/images/resultados/${c.slug}-${side === "before" ? "antes" : "depois"}`;
   return (
     <picture>
-      <source type="image/avif" srcSet={`${base}-600.avif 600w, ${base}-1200.avif 1200w`} sizes={SIZES} />
-      <img
-        src={`${base}-1200.webp`}
-        srcSet={`${base}-600.webp 600w, ${base}-1200.webp 1200w`}
-        sizes={SIZES}
-        width="1200"
-        height="1500"
-        alt={c.alt[side]}
-        loading="lazy"
-        decoding="async"
-      />
+      <source type="image/avif" srcSet={`${base}.avif`} />
+      <img src={`${base}.webp`} width="800" height="1200" alt={c.alt[side]} loading="lazy" decoding="async" />
     </picture>
   );
 }
@@ -108,7 +99,7 @@ export default function Results({ cases }) {
     <section className="results" id="resultados" aria-labelledby="results-title">
       <div className={`results-track ${reduced ? "is-static" : ""}`} ref={track}>
         {/* The title stays on screen with the photo while the fibre crosses it. */}
-        <div className="results-stage" style={{ "--draw": 1, "--p": 0.5 }}>
+        <div className={`results-stage ${cases.length > 1 ? "has-cases" : ""}`} style={{ "--draw": 1, "--p": 0.5 }}>
           <div className="results-intro">
             <span className="eyebrow">03 — RESULTADO REAL</span>
             <h2 id="results-title">
@@ -144,12 +135,12 @@ export default function Results({ cases }) {
               </span>
             </div>
             <div className="ba-aside">
-              <span className="ba-procedure">{c.procedure}</span>
+              <span className="ba-procedure">{c.procedure || c.label}</span>
               {cases.length > 1 && (
                 <div className="ba-cases" role="group" aria-label="Escolher o caso">
                   {cases.map((x, i) => (
                     <button key={x.slug} aria-pressed={i === index} onClick={() => setIndex(i)}>
-                      {x.procedure}
+                      {x.label}
                     </button>
                   ))}
                 </div>

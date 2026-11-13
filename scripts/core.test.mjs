@@ -80,17 +80,25 @@ test("antes e depois: espaço reservado só na versão de revisão; publicado se
   assert.deepEqual(resultCases(pronto), []);
   assert.equal(resultCases({ ...pronto, hours: "" })[0].placeholder, true);
 });
-test("cada caso de antes e depois tem procedimento, descrições e os 8 arquivos preparados", () => {
+test("cada caso de antes e depois tem nome, descrições e os 4 arquivos preparados", () => {
+  const slugs = new Set();
   for (const r of site.results) {
     assert.match(r.slug, /^[a-z0-9-]+$/);
-    assert.ok(r.procedure && r.interval && r.alt?.before && r.alt?.after, `${r.slug}: dados incompletos`);
+    assert.ok(!slugs.has(r.slug), `${r.slug} repetido`);
+    slugs.add(r.slug);
+    assert.ok(r.label && r.alt?.before && r.alt?.after, `${r.slug}: dados incompletos`);
+    // Procedimento e intervalo só como a Mariana informar: podem ficar vazios, nunca chutados.
+    assert.equal(typeof r.procedure, "string");
+    assert.equal(typeof r.interval, "string");
     for (const lado of ["antes", "depois"])
-      for (const w of [600, 1200])
-        for (const ext of ["avif", "webp"])
-          assert.ok(existsSync(`public/images/resultados/${r.slug}-${lado}-${w}.${ext}`), `${r.slug}-${lado}-${w}.${ext}`);
+      for (const ext of ["avif", "webp"])
+        assert.ok(existsSync(`public/images/resultados/${r.slug}-${lado}.${ext}`), `${r.slug}-${lado}.${ext}`);
   }
-  // Com fotos reais, a legenda precisa da habilitação: não publica sem ela.
-  if (site.results.length) assert.ok(site.qualification, "falta a habilitação para a legenda do antes e depois");
+});
+test("legenda sem habilitação ainda traz nome, profissão e CRBM (a habilitação entra quando ela informar)", () => {
+  const legenda = resultCaption({ ...site, qualification: "" });
+  assert.ok(legenda.includes(`${site.name} · ${site.profession} · ${site.registration}.`));
+  assert.ok(!legenda.includes(" ·  ·") && !legenda.includes("undefined"));
 });
 
 import { afterClip, fiberPath, fiberPoints, fiberX, sweepOf } from "../src/experience/fiber.mjs";

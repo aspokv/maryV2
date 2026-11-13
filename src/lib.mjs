@@ -62,7 +62,7 @@ export function resultCaption(config = site) {
 /** Real cases when there are photos; a reserved slot only while the site is still a review version. */
 export function resultCases(config = site) {
   if (config.results.length) return config.results;
-  return canRelease(config) ? [] : [{ slug: "reserva", procedure: "Casos reais em breve", interval: "", placeholder: true }];
+  return canRelease(config) ? [] : [{ slug: "reserva", label: "Casos reais em breve", interval: "", placeholder: true }];
 }
 
 export function schema(origin) {
